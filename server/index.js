@@ -5,6 +5,7 @@ import "dotenv/config";
 import fileMetaDataExtraction from "./routes/fileMetaDataExtractionRouter.js";
 import fileUpload from 'express-fileupload';
 import tableRoutes from "./routes/table.routes.js";
+import apiRoutes from "./routes/api.routes.js"; 
 
 
 
@@ -19,6 +20,7 @@ app.get('/', (req, res) => res.json({ message: 'Hello from Express' }));
 app.get('/api/health', (req, res) => res.json({ status: 'ok', now: new Date() }));
 app.use("/api/file-csv", fileMetaDataExtraction);
 app.use("/api/tables", tableRoutes);
+app.use("/api", apiRoutes);
 
 app.listen(PORT, () => {
   console.log(` Server running on port ${PORT}`);
