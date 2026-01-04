@@ -1,71 +1,10 @@
-// // Import the module
-
-// export const fileMetaDataExtraction = (req, res) => {
-//     try {
-//         console.log(req.files);
-//         if (!req.files || Object.keys(req.files).length === 0) {
-//             console.log("No files were uploaded.");
-//             return res.status(400).json({ message: 'No files were uploaded.' });
-//         }
-
-//         // Access the file (assuming key is 'file')
-//         const uploadedFile = req.files.file;
-
-//         return res.status(200).json({
-//             message: 'File uploaded successfully',
-//             file: {
-//                 name: uploadedFile.name,
-//                 size: uploadedFile.size,
-//                 mimetype: uploadedFile.mimetype,
-//                 md5: uploadedFile.md5
-//             }
-//         });
-
-//     } catch (err) {
-//         return res.status(500).json({
-//             message: err.message
-//         });
-//     }
-// };
-
-
-
-
-// file.controller.js
+// table.controller.js
 import { v4 as uuidv4 } from "uuid";
-import csv from "csv-parser";
-import { Readable } from "stream";
+import { MongoClient } from "mongodb";
+import { Client as PGClient } from "pg";
 
 /* ---------------------------
-  Helper: Parse CSV from buffer
----------------------------- */
-export const parseCSV = (buffer) => {
-  return new Promise((resolve, reject) => {
-    const rows = [];
-    Readable.from(buffer)
-      .pipe(csv())
-      .on("data", (row) => rows.push(row))
-      .on("end", () => resolve(rows))
-      .on("error", (err) => reject(err));
-  });
-};
-
-/* ---------------------------
-  Dataset-level metadata
----------------------------- */
-export const extractDatasetMetadata = (rows, file) => {
-  return {
-    dataset_id: uuidv4(),
-    dataset_name: file.name,
-    row_count: rows.length,
-    column_count: rows.length ? Object.keys(rows[0]).length : 0,
-    detected_domain: "Unknown",
-    ingestion_timestamp: new Date().toISOString(),
-  };
-};
-
-/* ---------------------------
-  Infer column type
+  Helper: Infer column type
 ---------------------------- */
 const inferType = (values) => {
   if (values.every((v) => !isNaN(v))) return "numeric";
@@ -74,15 +13,27 @@ const inferType = (values) => {
 };
 
 /* ---------------------------
-  Column-level metadata
+  Dataset metadata
 ---------------------------- */
-export const extractColumnMetadata = (rows) => {
+const extractDatasetMetadata = (rows, tableName) => ({
+  dataset_id: uuidv4(),
+  dataset_name: tableName,
+  row_count: rows.length,
+  column_count: rows.length ? Object.keys(rows[0]).length : 0,
+  detected_domain: "Unknown",
+  ingestion_timestamp: new Date().toISOString(),
+});
+
+/* ---------------------------
+  Column metadata
+---------------------------- */
+const extractColumnMetadata = (rows) => {
   const columns = Object.keys(rows[0] || {});
   const rowCount = rows.length;
 
   return columns.map((col) => {
     const values = rows.map((r) => r[col]);
-    const nonNull = values.filter((v) => v !== "" && v != null);
+    const nonNull = values.filter((v) => v !== null && v !== undefined);
     const unique = new Set(nonNull);
 
     return {
@@ -100,12 +51,11 @@ export const extractColumnMetadata = (rows) => {
 /* ---------------------------
   Numeric stats
 ---------------------------- */
-export const extractNumericStats = (rows) => {
+const extractNumericStats = (rows) => {
   const stats = {};
   Object.keys(rows[0] || {}).forEach((col) => {
     const nums = rows.map((r) => Number(r[col])).filter((v) => !isNaN(v));
     if (!nums.length) return;
-
     stats[col] = {
       min_value: Math.min(...nums),
       max_value: Math.max(...nums),
@@ -119,7 +69,7 @@ export const extractNumericStats = (rows) => {
 /* ---------------------------
   Categorical stats
 ---------------------------- */
-export const extractCategoricalStats = (rows) => {
+const extractCategoricalStats = (rows) => {
   const stats = {};
   Object.keys(rows[0] || {}).forEach((col) => {
     const values = rows.map((r) => r[col]).filter(Boolean);
@@ -139,7 +89,7 @@ export const extractCategoricalStats = (rows) => {
 /* ---------------------------
   Temporal stats
 ---------------------------- */
-export const extractTemporalStats = (rows) => {
+const extractTemporalStats = (rows) => {
   const stats = {};
   Object.keys(rows[0] || {}).forEach((col) => {
     const dates = rows.map((r) => new Date(r[col])).filter((d) => !isNaN(d));
@@ -158,18 +108,16 @@ export const extractTemporalStats = (rows) => {
 };
 
 /* ---------------------------
-  Patterns (regex example)
+  Patterns
 ---------------------------- */
-export const extractPatterns = (rows) => {
+const extractPatterns = (rows) => {
   const patterns = {};
   Object.keys(rows[0] || {}).forEach((col) => {
     const values = rows.map((r) => r[col]).filter(Boolean);
-    const regex = /^[A-Z]{3}\d+/; // Example pattern
+    const regex = /^[A-Z]{3}\d+/;
     const matches = values.filter((v) => regex.test(v)).length;
     if (matches > 0) {
-      patterns[col] = {
-        regex_match_ratio: matches / values.length,
-      };
+      patterns[col] = { regex_match_ratio: matches / values.length };
     }
   });
   return patterns;
@@ -178,15 +126,11 @@ export const extractPatterns = (rows) => {
 /* ---------------------------
   Compliance flags
 ---------------------------- */
-export const extractComplianceFlags = (columns) => {
+const extractComplianceFlags = (columns) => {
   const columnNamesLower = columns.map((c) => c.column_name.toLowerCase());
   return {
-    kyc_fields_present: columnNamesLower.some(
-      (n) => n.includes("kyc") || n.includes("address")
-    ),
-    monetary_fields_present: columnNamesLower.some(
-      (n) => n.includes("amount") || n.includes("price")
-    ),
+    kyc_fields_present: columnNamesLower.some((n) => n.includes("kyc") || n.includes("address")),
+    monetary_fields_present: columnNamesLower.some((n) => n.includes("amount") || n.includes("price")),
     personal_data_present: columnNamesLower.some((n) =>
       ["name", "email", "phone"].some((p) => n.includes(p))
     ),
@@ -194,19 +138,24 @@ export const extractComplianceFlags = (columns) => {
 };
 
 /* ---------------------------
-  Main controller function
+  Main controller: MongoDB
 ---------------------------- */
-export const fileMetaDataExtraction = async (req, res) => {
+export const tableMetaDataExtractionMongo = async (req, res) => {
   try {
-    const file = req.files?.file;
-    if (!file) return res.status(400).json({ message: "No file uploaded" });
+    const { uri, dbName, collectionName } = req.body;
+    if (!uri || !dbName || !collectionName)
+      return res.status(400).json({ message: "Missing parameters" });
 
-    const rows = await parseCSV(file.data);
+    const client = new MongoClient(uri);
+    await client.connect();
+    const collection = client.db(dbName).collection(collectionName);
+    const rows = await collection.find({}).toArray();
+    await client.close();
 
-    const dataset = extractDatasetMetadata(rows, file);
+    const dataset = extractDatasetMetadata(rows, collectionName);
     const columns = extractColumnMetadata(rows);
 
-    const extractedMetadata = {
+    const metadata = {
       dataset,
       columns,
       numeric_stats: extractNumericStats(rows),
@@ -216,7 +165,41 @@ export const fileMetaDataExtraction = async (req, res) => {
       compliance_flags: extractComplianceFlags(columns),
     };
 
-    res.json(extractedMetadata);
+    res.json(metadata);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+/* ---------------------------
+  Main controller: PostgreSQL
+---------------------------- */
+export const tableMetaDataExtractionPostgres = async (req, res) => {
+  try {
+    const { connectionString, tableName } = req.body;
+    if (!connectionString || !tableName)
+      return res.status(400).json({ message: "Missing parameters" });
+
+    const client = new PGClient({ connectionString });
+    await client.connect();
+
+    const { rows } = await client.query(`SELECT * FROM ${tableName} LIMIT 1000`);
+    await client.end();
+
+    const dataset = extractDatasetMetadata(rows, tableName);
+    const columns = extractColumnMetadata(rows);
+
+    const metadata = {
+      dataset,
+      columns,
+      numeric_stats: extractNumericStats(rows),
+      categorical_stats: extractCategoricalStats(rows),
+      temporal_stats: extractTemporalStats(rows),
+      patterns: extractPatterns(rows),
+      compliance_flags: extractComplianceFlags(columns),
+    };
+
+    res.json(metadata);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
