@@ -1,0 +1,5 @@
+fastapi[standard]
+pydantic
+langchain-groq
+pydantic
+python-dotenv
