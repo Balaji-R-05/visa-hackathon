@@ -41,89 +41,43 @@ const Chatbot = ({ auditContext }) => {
         - Regulatory Risks: ${15}
         
         Answer user questions based on this data. Be concise, technical, and helpful.
-         "status": "success",
-    "genai_insights": {
-        "data_quality_issues": {
-            "Completeness": {
-                "issue": "Some columns have high null ratios",
-                "affected_columns": [
-                    "customer_id",
-                    "amount",
-                    "kyc_address"
-                ],
-                "description": "The columns customer_id, amount, and kyc_address have null ratios of 0.0012, 0.0005, and 0.22 respectively, indicating some missing values."
-            },
-            "Accuracy": {
-                "issue": "No specific accuracy issues detected",
-                "affected_columns": [],
-                "description": "No specific accuracy issues detected, but some data may be incorrect or inconsistent."
-            },
-            "Consistency": {
-                "issue": "Inconsistent data formats",
-                "affected_columns": [
-                    "currency"
-                ],
-                "description": "The currency column has both 'INR' and 'inr' values, indicating inconsistent data formats."
-            },
-            "Validity": {
-                "issue": "Some values may not be valid",
-                "affected_columns": [
-                    "amount",
-                    "txn_timestamp"
-                ],
-                "description": "The amount column has a negative value ratio of 0.015 and a min value of -50.0, indicating some potentially invalid values. The txn_timestamp column has a future timestamp ratio of 0.02 and a stale record ratio of 0.18."
-            },
-            "Timeliness": {
-                "issue": "Some records may be stale or have future timestamps",
-                "affected_columns": [
-                    "txn_timestamp"
-                ],
-                "description": "The txn_timestamp column has a future timestamp ratio of 0.02 and a stale record ratio of 0.18, indicating some records may not be up-to-date."
-            },
-            "Uniqueness": {
-                "issue": "Some columns have low uniqueness ratios",
-                "affected_columns": [
-                    "customer_id",
-                    "amount",
-                    "kyc_address"
-                ],
-                "description": "The columns customer_id, amount, and kyc_address have unique ratios of 0.42, 0.23, and 0.76 respectively, indicating some duplicate values."
-            },
-            "Integrity": {
-                "issue": "No specific integrity issues detected",
-                "affected_columns": [],
-                "description": "No specific integrity issues detected."
-            }
-        },
-        "remediation_actions": [
-            {
-                "action": "Validate and correct inconsistent data formats",
-                "priority": 1,
-                "description": "Validate and correct inconsistent data formats in the currency column."
-            },
-            {
-                "action": "Verify and correct potentially invalid values",
-                "priority": 2,
-                "description": "Verify and correct potentially invalid values in the amount and txn_timestamp columns."
-            },
-            {
-                "action": "Handle missing values",
-                "priority": 3,
-                "description": "Handle missing values in the customer_id, amount, and kyc_address columns."
-            }
-        ],
-        "regulatory_compliance_risks": [
-            "KYC and AML regulations may be impacted by inconsistent or invalid data in the kyc_address and customer_id columns."
-        ],
-        "composite_dqs": 0.72,
-        "dimension_scores": {
-            "Completeness": 0.7,
-            "Validity": 0.75,
-            "Consistency": 0.8,
-            "Timeliness": 0.85,
-            "Uniqueness": 0.9,
-            "Accuracy": 0.0
-        }
+         txn_id,customer_id,amount,currency,kyc_address,txn_timestamp,status
+TXN1001,CUST_001,500.00,INR,123 Maple St,2025-12-01T10:00:00Z,SUCCESS
+TXN1002,CUST_002,1200.50,inr,456 Oak Ave,2025-12-01T11:30:00Z,SUCCESS
+TXN1003,,250.00,INR,789 Pine Rd,2025-12-02T09:15:00Z,FAILED
+TXN1004,CUST_004,-50.00,INR,321 Birch Ln,2025-12-02T14:00:00Z,SUCCESS
+TXN1005,CUST_001,500.00,inr,,2025-12-03T08:45:00Z,SUCCESS
+TXN1006,CUST_006,75.25,INR,,2025-12-03T16:20:00Z,SUCCESS
+TXN1007,CUST_007,1200.50,INR,654 Cedar Ct,2026-05-15T12:00:00Z,SUCCESS
+TXN1008,CUST_008,300.00,inr,,2010-01-01T10:00:00Z,SUCCESS
+TXN1009,CUST_009,,INR,987 Elm Blvd,2025-12-04T10:10:00Z,PENDING
+TXN1010,CUST_001,500.00,INR,123 Maple St,2025-12-04T11:00:00Z,SUCCESS
+TXN1011,CUST_011,150.00,inr,,2025-12-04T12:00:00Z,SUCCESS
+TXN1012,CUST_012,2200.00,INR,111 Spruce Dr,2025-12-05T09:00:00Z,SUCCESS
+TXN1013,CUST_002,1200.50,INR,,2025-12-05T10:00:00Z,SUCCESS
+TXN1014,CUST_014,-10.00,inr,222 Walnut St,2025-12-05T14:30:00Z,SUCCESS
+TXN1015,CUST_015,300.00,INR,,2025-12-06T11:00:00Z,SUCCESS
+TXN1016,CUST_016,450.00,INR,333 Cherry Ln,2026-08-20T10:00:00Z,SUCCESS
+TXN1017,CUST_017,890.00,inr,,2025-12-06T15:00:00Z,SUCCESS
+TXN1018,CUST_018,1200.50,INR,444 Ash Rd,2015-05-20T08:00:00Z,SUCCESS
+TXN1019,CUST_019,500.00,INR,,2025-12-07T12:00:00Z,SUCCESS
+TXN1020,CUST_020,10.00,inr,555 Willow St,2025-12-07T13:00:00Z,SUCCESS
+TXN1021,CUST_001,500.00,INR,123 Maple St,2025-12-07T14:00:00Z,SUCCESS
+TXN1022,CUST_022,300.00,INR,,2025-12-08T09:00:00Z,SUCCESS
+TXN1023,CUST_023,75.25,inr,666 Poplar Dr,2025-12-08T10:00:00Z,SUCCESS
+TXN1024,CUST_024,1200.50,INR,,2025-12-08T11:00:00Z,SUCCESS
+TXN1025,CUST_025,500.00,INR,777 Redwood Way,2025-12-08T12:00:00Z,SUCCESS
+... (Rows 26-90 omitted for brevity; follow pattern of repeating amounts 500.00, 1200.50, and 300.00 to lower uniqueness)
+TXN1091,CUST_091,500.00,inr,,2025-12-25T10:00:00Z,SUCCESS
+TXN1092,CUST_092,1200.50,INR,888 Cypress St,2025-12-25T11:00:00Z,SUCCESS
+TXN1093,CUST_093,300.00,inr,,2025-12-26T09:00:00Z,SUCCESS
+TXN1094,CUST_094,,INR,999 Juniper Ln,2025-12-26T10:00:00Z,SUCCESS
+TXN1095,CUST_095,500.00,INR,,2025-12-27T12:00:00Z,SUCCESS
+TXN1096,CUST_096,1200.50,inr,101 Aspen Ct,2025-12-27T14:00:00Z,SUCCESS
+TXN1097,CUST_097,300.00,INR,,2025-12-28T10:00:00Z,SUCCESS
+TXN1098,CUST_098,75.25,INR,202 Beech Rd,2025-12-28T11:00:00Z,SUCCESS
+TXN1099,CUST_099,500.00,inr,,2025-12-29T09:00:00Z,SUCCESS
+TXN1100,CUST_100,1200.50,INR,303 Sycamore Dr,2025-12-29T10:00:00Z,SUCCESS
       `;
 
       const result = await model.generateContent([systemPrompt, ...messages.map(m => `${m.role}: ${m.content}`), input]);
