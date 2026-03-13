@@ -1,0 +1,32 @@
+services:
+  # ── React Frontend (nginx) ──────────────────────────────────
+  client:
+    build: ./client
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+    restart: unless-stopped
+
+  # ── Express API Server ──────────────────────────────────────
+  server:
+    build: ./server
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - CORS_ORIGIN=http://localhost
+      - AI_SERVICE_URL=http://ai-services:8000
+    depends_on:
+      - ai-services
+    restart: unless-stopped
+
+  # ── FastAPI AI Service ──────────────────────────────────────
+  ai-services:
+    build: ./ai-services
+    ports:
+      - "8000:8000"
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - GROQ_MODEL=${GROQ_MODEL:-mixtral-8x7b-32768}
+    restart: unless-stopped
