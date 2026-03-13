@@ -1,18 +1,33 @@
 import axios from 'axios';
-import { v4 as uuidv4 } from 'uuid';
+import { buildFullMetadata } from '../utils/metadataExtractor.js';
 
-
-// Utility to infer data type simply (string, number, boolean, object, null)
-function inferDataType(value) {
-  if (value === null || value === undefined) return 'null';
-  if (typeof value === 'number') return 'numeric';
-  if (typeof value === 'boolean') return 'boolean';
-  if (typeof value === 'string') return 'string';
-  if (typeof value === 'object') {
-    if (value instanceof Date) return 'datetime';
-    return 'object';
+// Validate URL to prevent SSRF attacks
+function isUrlSafe(urlString) {
+  try {
+    const url = new URL(urlString);
+    // Only allow http and https protocols
+    if (!['http:', 'https:'].includes(url.protocol)) return false;
+    const hostname = url.hostname.toLowerCase();
+    // Block localhost and private/internal IPs
+    const blocked = [
+      'localhost', '127.0.0.1', '0.0.0.0', '[::1]',
+      '169.254.169.254', // cloud metadata endpoint
+      'metadata.google.internal',
+    ];
+    if (blocked.includes(hostname)) return false;
+    // Block private IP ranges (10.x, 172.16-31.x, 192.168.x)
+    const ipMatch = hostname.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/);
+    if (ipMatch) {
+      const [, a, b] = ipMatch.map(Number);
+      if (a === 10 || a === 0) return false;
+      if (a === 172 && b >= 16 && b <= 31) return false;
+      if (a === 192 && b === 168) return false;
+      if (a === 169 && b === 254) return false;
+    }
+    return true;
+  } catch {
+    return false;
   }
-  return 'unknown';
 }
 
 export const apiDataExtraction = async (req, res) => {
@@ -21,6 +36,10 @@ export const apiDataExtraction = async (req, res) => {
 
     if (!apiUrl) {
       return res.status(400).json({ message: 'API URL is required' });
+    }
+
+    if (!isUrlSafe(apiUrl)) {
+      return res.status(400).json({ message: 'Invalid or blocked URL. Only public HTTP(S) URLs are allowed.' });
     }
 
     // Fetch data from user-provided API URL
@@ -32,80 +51,11 @@ export const apiDataExtraction = async (req, res) => {
     }
 
     if (data.length === 0) {
-      return res.status(200).json({
-        dataset: {
-          dataset_id: uuidv4(),
-          dataset_name: apiUrl,
-          row_count: 0,
-          column_count: 0,
-          detected_domain: 'API Source',
-          ingestion_timestamp: new Date().toISOString(),
-        },
-        columns: [],
-        numeric_stats: {},
-        categorical_stats: {},
-        temporal_stats: {},
-        patterns: {},
-        compliance_flags: {},
-      });
+      return res.status(200).json(buildFullMetadata([], apiUrl, 'API Source'));
     }
 
-    // Extract schema
-    const schema = Object.keys(data[0]);
-
-    // Build columns data
-    const columns = {};
-    schema.forEach(col => {
-      columns[col] = data.map(row => row[col]);
-    });
-
-    // Helper for unique counts
-    const uniqueCount = arr => new Set(arr.filter(v => v !== null && v !== undefined)).size;
-
-    // Build column metadata
-    const columnsMetadata = schema.map(col => {
-      const colData = columns[col];
-      const nullCount = colData.filter(v => v === null || v === undefined).length;
-      const uniqueCnt = uniqueCount(colData);
-      const sampleValues = colData
-        .filter(v => v !== null && v !== undefined)
-        .slice(0, 3)
-        .map(v => {
-          if (typeof v === 'string' && v.length > 10) return v.slice(0, 5) + '***'; // simple masking
-          return v;
-        });
-
-      return {
-        column_name: col,
-        inferred_data_type: inferDataType(colData.find(v => v !== null && v !== undefined)),
-        null_count: nullCount,
-        null_ratio: nullCount / data.length,
-        unique_count: uniqueCnt,
-        unique_ratio: uniqueCnt / data.length,
-        sample_values_masked: sampleValues,
-      };
-    });
-
-    // You can add numeric_stats, categorical_stats, temporal_stats, patterns, compliance_flags here as needed
-    // For demo, keep them empty
-
-    const metadata = {
-      dataset: {
-        dataset_id: uuidv4(),
-        dataset_name: apiUrl,
-        row_count: data.length,
-        column_count: schema.length,
-        detected_domain: 'API Source',
-        ingestion_timestamp: new Date().toISOString(),
-      },
-      columns: columnsMetadata,
-      numeric_stats: {},
-      categorical_stats: {},
-      temporal_stats: {},
-      patterns: {},
-      compliance_flags: {},
-    };
-
+    // Use shared extraction utilities for full metadata (fixes #6)
+    const metadata = buildFullMetadata(data, apiUrl, 'API Source');
     return res.status(200).json(metadata);
 
   } catch (error) {
