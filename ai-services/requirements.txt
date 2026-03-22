@@ -1,7 +1,6 @@
 fastapi[standard]
 pydantic
+langchain
 langchain-groq
 python-dotenv
 uvicorn
-langchain_core
-langchain
