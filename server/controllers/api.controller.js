@@ -1,24 +1,40 @@
 import axios from 'axios';
 import { buildFullMetadata } from '../utils/metadataExtractor.js';
 
+
+// Function to check if the URL is publicly accessible and safe.
 function isUrlSafe(urlString) {
   try {
     const url = new URL(urlString);
-    if (!['http:', 'https:'].includes(url.protocol)) return false;
-    const hostname = url.hostname.toLowerCase();
+    if (!['http:', 'https:'].includes(url.protocol)) {
+      return false;
+    }
+
+    const hostname = url.hostname.toLowerCase();  
     const blocked = [
       'localhost', '127.0.0.1', '0.0.0.0', '[::1]',
-      '169.254.169.254',
-      'metadata.google.internal',
+      '169.254.169.254', 'metadata.google.internal',
     ];
-    if (blocked.includes(hostname)) return false;
+
+    if (blocked.includes(hostname)) {
+      return false;
+    }
+
     const ipMatch = hostname.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/);
     if (ipMatch) {
       const [, a, b] = ipMatch.map(Number);
-      if (a === 10 || a === 0) return false;
-      if (a === 172 && b >= 16 && b <= 31) return false;
-      if (a === 192 && b === 168) return false;
-      if (a === 169 && b === 254) return false;
+      if (a === 10 || a === 0) {
+        return false;
+      }
+      if (a === 172 && b >= 16 && b <= 31) {
+        return false;
+      }
+      if (a === 192 && b === 168) {
+        return false;
+      }
+      if (a === 169 && b === 254) {
+        return false;
+      }
     }
     return true;
   } catch {
@@ -26,14 +42,13 @@ function isUrlSafe(urlString) {
   }
 }
 
+// Function to extract data from an API.
 export const apiDataExtraction = async (req, res) => {
   try {
     const { apiUrl } = req.body;
-
     if (!apiUrl) {
       return res.status(400).json({ message: 'API URL is required' });
     }
-
     if (!isUrlSafe(apiUrl)) {
       return res.status(400).json({ message: 'Invalid or blocked URL. Only public HTTP(S) URLs are allowed.' });
     }

@@ -4,11 +4,15 @@ from schemas import ExtractedMetadata, DQAnalysisResponse
 from services.llm import dq_chain
 from core.logger import logger
 
+
 router = APIRouter(prefix="", tags=["Data Quality"])
+
 
 @router.post("/analyze-dqs", response_model=DQAnalysisResponse)
 async def analyze_dqs(metadata: ExtractedMetadata):
-    """Analyze data quality from extracted metadata using GenAI."""
+    """
+    Analyze data quality from extracted metadata using GenAI.
+    """
     logger.info(f"Analyzing data quality for dataset: {metadata.dataset.dataset_name}")
     try:
         response = dq_chain.invoke({"metadata": metadata.model_dump_json()})
@@ -17,9 +21,12 @@ async def analyze_dqs(metadata: ExtractedMetadata):
         logger.error(f"Error during DQ analysis: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.post("/export-report")
 async def export_remediation_report(analysis: DQAnalysisResponse):
-    """Generates a professional Markdown report for remediation."""
+    """
+    Generates a professional Markdown report for remediation.
+    """
     logger.info("Generating remediation report")
     try:
         report = f"""# Data Quality Remediation Report

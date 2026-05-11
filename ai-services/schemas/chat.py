@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field
 from typing import List
 from .analysis import DQAnalysisResponse
 
+
 class ChatMessage(BaseModel):
     role: str = Field(description="Role of the message sender (user or bot)")
     content: str = Field(description="Content of the message")

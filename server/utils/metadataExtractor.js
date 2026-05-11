@@ -2,23 +2,27 @@ import crypto from "crypto";
 
 const DATE_PATTERNS = [
   /^\d{4}-\d{2}-\d{2}/,        // YYYY-MM-DD
-  /^\d{2}\/\d{2}\/\d{4}/,       // MM/DD/YYYY or DD/MM/YYYY
+  /^\d{2}\/\d{2}\/\d{4}/,      // MM/DD/YYYY or DD/MM/YYYY
   /^\d{2}\/\d{4}/,             // MM/YYYY
   /^\d{4}$/                    // YYYY (only if reasonable range)
 ];
 
+
+// Function to check if a value is a date.
 const isLikelyDate = (v) => {
   if (typeof v !== 'string' || v.trim() === '') return false;
-  if (!isNaN(v) && (v.length > 4 || Number(v) > 2100)) return false; 
+  if (!isNaN(v) && (v.length > 4 || Number(v) > 2100)) return false;
   return DATE_PATTERNS.some(p => p.test(v)) && !isNaN(Date.parse(v));
 };
 
+// Function to infer the type of data in a column.
 export const inferType = (values) => {
   if (values.every((v) => !isNaN(v) && v !== "")) return "numeric";
   if (values.every((v) => isLikelyDate(v))) return "datetime";
   return "string";
 };
 
+// Function to extract dataset metadata.
 export const extractDatasetMetadata = (rows, sourceName, domain = "Unknown") => ({
   dataset_id: crypto.randomUUID(),
   dataset_name: sourceName,
@@ -28,6 +32,7 @@ export const extractDatasetMetadata = (rows, sourceName, domain = "Unknown") => 
   ingestion_timestamp: new Date().toISOString(),
 });
 
+// Function to extract column metadata.
 export const extractColumnMetadata = (rows) => {
   const columns = Object.keys(rows[0] || {});
   const rowCount = rows.length;
@@ -49,6 +54,7 @@ export const extractColumnMetadata = (rows) => {
   });
 };
 
+// Function to extract numeric statistics.
 export const extractNumericStats = (rows) => {
   const stats = {};
   Object.keys(rows[0] || {}).forEach((col) => {
@@ -65,6 +71,7 @@ export const extractNumericStats = (rows) => {
   return stats;
 };
 
+// Function to extract categorical statistics.
 export const extractCategoricalStats = (rows) => {
   const stats = {};
   Object.keys(rows[0] || {}).forEach((col) => {
@@ -82,6 +89,7 @@ export const extractCategoricalStats = (rows) => {
   return stats;
 };
 
+// Function to extract temporal statistics.
 export const extractTemporalStats = (rows) => {
   const stats = {};
   Object.keys(rows[0] || {}).forEach((col) => {
@@ -109,6 +117,7 @@ export const extractTemporalStats = (rows) => {
   return stats;
 };
 
+// Function to extract patterns.
 export const extractPatterns = (rows) => {
   const patterns = {};
   Object.keys(rows[0] || {}).forEach((col) => {
@@ -124,6 +133,7 @@ export const extractPatterns = (rows) => {
   return patterns;
 };
 
+// Function to extract compliance flags.
 export const extractComplianceFlags = (columns) => {
   const columnNamesLower = columns.map((c) => c.column_name.toLowerCase());
   return {
@@ -139,6 +149,7 @@ export const extractComplianceFlags = (columns) => {
   };
 };
 
+// Function to build full metadata.
 export const buildFullMetadata = (rows, sourceName, domain = "Unknown") => {
   const dataset = extractDatasetMetadata(rows, sourceName, domain);
   const columns = extractColumnMetadata(rows);

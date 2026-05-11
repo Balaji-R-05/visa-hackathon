@@ -6,11 +6,15 @@ from services.llm import chat_chain, llm, summarize_history
 from prompt import CHAT_PROMPT
 from core.logger import logger
 
+
 router = APIRouter(prefix="", tags=["Chat"])
+
 
 @router.post("", response_model=ChatResponse)
 async def chat_with_auditor(request: ChatRequest):
-    """Standard chat endpoint (non-streaming)."""
+    """
+    Standard chat endpoint (non-streaming).
+    """
     try:
         history_str = await summarize_history(request.messages)
         response = chat_chain.invoke({
@@ -26,7 +30,9 @@ async def chat_with_auditor(request: ChatRequest):
 
 @router.post("/stream")
 async def chat_with_auditor_stream(request: ChatRequest):
-    """Streaming chat endpoint for real-time AI responses."""
+    """
+    Streaming chat endpoint for real-time AI responses.
+    """
     logger.info("Streaming chat request received")
     async def event_generator():
         try:

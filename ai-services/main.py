@@ -6,13 +6,15 @@ from core.exceptions import setup_exception_handlers
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.info("🚀 DQS-AI Agent starting up...")
+    logger.info(">_< DQS-AI Agent starting up...")
     yield
-    logger.info("🛑 DQS-AI Agent shutting down...")
+    logger.info(">_< DQS-AI Agent shutting down...")
 
-app = FastAPI(
+
+app: FastAPI = FastAPI(
     title="DQS-AI Agent",
     description="Data Quality Service powered by GenAI",
     version="1.3.0",

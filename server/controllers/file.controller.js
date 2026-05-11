@@ -2,6 +2,7 @@ import csv from "csv-parser";
 import { Readable } from "stream";
 import { buildFullMetadata } from "../utils/metadataExtractor.js";
 
+// Function to parse CSV file.
 export const parseCSV = (buffer) => {
   return new Promise((resolve, reject) => {
     const rows = [];
@@ -13,10 +14,13 @@ export const parseCSV = (buffer) => {
   });
 };
 
+// Function to extract metadata from a file.
 export const fileMetaDataExtraction = async (req, res) => {
   try {
     const file = req.files?.file;
-    if (!file) return res.status(400).json({ message: "No file uploaded" });
+    if (!file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
 
     if (!file.name.toLowerCase().endsWith('.csv')) {
       return res.status(400).json({ message: "Only CSV files are supported" });

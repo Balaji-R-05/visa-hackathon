@@ -4,6 +4,7 @@ from uuid import UUID
 from datetime import datetime
 from .stats import NumericStats, CategoricalStats, TemporalStats, PatternStats, CrossColumnStats, ComplianceFlags
 
+
 class ColumnMetadata(BaseModel):
     model_config = ConfigDict(extra="ignore")
     column_name: str

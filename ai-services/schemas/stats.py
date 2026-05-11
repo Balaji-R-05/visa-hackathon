@@ -2,6 +2,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from typing import List, Dict, Tuple, Optional, Union
 from datetime import datetime
 
+
 class NumericStats(BaseModel):
     model_config = ConfigDict(extra="ignore")
     min_value: Optional[float] = None

@@ -1,6 +1,8 @@
 import rateLimit from 'express-rate-limit';
 import fileUpload from 'express-fileupload';
 
+
+// Rate Limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -9,12 +11,13 @@ const limiter = rateLimit({
   message: { error: 'Too many requests, please try again later.' },
 });
 
+// File Upload Limiting
 const fileLimiter = fileUpload({
-  limits: { fileSize: 10 * 1024 * 1024 }, 
+  limits: { fileSize: 10 * 1024 * 1024 },
   abortOnLimit: true,
-  limitHandler: (req, res) => {
+  limitHandler: (_req, res) => {
     res.status(413).json({ error: 'File too large. Maximum size is 10MB.' });
-  },
+  }
 })
 
 export { limiter, fileLimiter };

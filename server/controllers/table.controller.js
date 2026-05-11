@@ -7,12 +7,13 @@ import { buildFullMetadata } from "../utils/metadataExtractor.js";
 export const tableMetaDataExtractionMongo = async (req, res) => {
   try {
     const { uri, dbName, collectionName } = req.body;
-    if (!uri || !dbName || !collectionName)
+    if (!uri || !dbName || !collectionName) {
       return res.status(400).json({ message: "Missing parameters" });
+    }
 
     const client = await connectToMongo(uri);
     const collection = client.db(dbName).collection(collectionName);
-    const rows = await collection.find({}).limit(1000).toArray(); // Added limit for safety
+    const rows = await collection.find({}).limit(1000).toArray();
 
     const metadata = buildFullMetadata(rows, collectionName);
     res.json(metadata);
@@ -27,8 +28,9 @@ export const tableMetaDataExtractionMongo = async (req, res) => {
 export const tableMetaDataExtractionPostgres = async (req, res) => {
   try {
     const { connectionString, tableName } = req.body;
-    if (!connectionString || !tableName)
+    if (!connectionString || !tableName) {
       return res.status(400).json({ message: "Missing parameters" });
+    }
 
     // Validate table name to prevent SQL injection
     if (!/^[a-zA-Z_][a-zA-Z0-9_.]*$/.test(tableName)) {
@@ -36,9 +38,7 @@ export const tableMetaDataExtractionPostgres = async (req, res) => {
     }
 
     const client = await connectToPostgres(connectionString);
-
     const { rows } = await client.query(`SELECT * FROM "${tableName}" LIMIT 1000`);
-
     const metadata = buildFullMetadata(rows, tableName);
     res.json(metadata);
   } catch (err) {

@@ -63,10 +63,6 @@ Output must be a single flat JSON object strictly following the schema.
 """)
 
 
-
-
-
-
 CHAT_PROMPT = ChatPromptTemplate.from_template("""
 You are an expert Data Quality Auditor for DQS-AI.
 Your goal is to help the user interpret the findings of a data quality audit.
