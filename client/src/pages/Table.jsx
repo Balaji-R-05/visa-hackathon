@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { getTableData, getMongoData } from "../api/api.js";
+import { assessPostgres, assessMongo } from "../api/api.js";
+import AssessmentOptions, { DEFAULT_OPTIONS } from "../components/AssessmentOptions.jsx";
+import JobProgress from "../components/JobProgress.jsx";
 import { Database, Table as TableIcon, Link2, ShieldCheck, ChevronRight, Sparkles, Loader2, Zap } from "lucide-react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
@@ -11,6 +13,8 @@ const Table = ({ onResult }) => {
   const [tableName, setTableName] = useState("");
   const [dbName, setDbName] = useState(""); // For Mongo
   const [loading, setLoading] = useState(false);
+  const [options, setOptions] = useState(DEFAULT_OPTIONS);
+  const [job, setJob] = useState(null);
   const navigate = useNavigate();
 
   const handleConnect = async () => {
@@ -19,22 +23,16 @@ const Table = ({ onResult }) => {
     if (mode === "nosql" && (!dbName || !tableName)) return; // tableName used as collectionName
     
     setLoading(true);
+    setJob(null);
     try {
-      let result;
-      if (mode === "sql") {
-        result = await getTableData({ dbLink, tableName });
-      } else {
-        result = await getMongoData({ dbLink, dbName, collectionName: tableName });
-      }
-      
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      if (onResult) onResult(result);
-      toast.success(`${mode === "sql" ? "PostgreSQL" : "MongoDB"} Audit Initialized`);
-      navigate("/result", { state: { data: result } });
-
+      const finished = mode === "sql"
+        ? await assessPostgres({ dbLink, tableName }, options, setJob)
+        : await assessMongo({ dbLink, dbName, collectionName: tableName }, options, setJob);
+      finished.warnings?.forEach((w) => toast.warn(w));
+      if (onResult) onResult(finished.report);
+      else navigate("/result");
     } catch (err) {
-      console.error("Connection failed", err);
-      toast.error(`Failed to connect to ${mode === "sql" ? "PostgreSQL" : "MongoDB"}. Check credentials.`);
+      toast.error(`${mode === "sql" ? "PostgreSQL" : "MongoDB"} assessment failed: ${err.message}`);
     } finally {
       setLoading(false);
     }
@@ -163,7 +161,7 @@ const Table = ({ onResult }) => {
                     {loading ? (
                       <>
                         <Loader2 className="size-5 animate-spin" />
-                        Analyzing Schema...
+                        Assessing...
                       </>
                     ) : (
                       <>
@@ -178,29 +176,8 @@ const Table = ({ onResult }) => {
 
             {/* Sidebar Cards */}
             <div className="space-y-6">
-              <div className="bg-white/[0.03] border border-white/10 rounded-[2rem] p-8">
-                <h4 className="flex items-center gap-3 text-lg font-bold mb-6 text-indigo-400">
-                  <Database className="size-5" /> Connection Specs
-                </h4>
-                <ul className="space-y-4">
-                  {(mode === "sql" ? [
-                    "Read-only access required",
-                    "SSL/TLS Encryption support",
-                    "PostgreSQL 12.0+ supported",
-                    "Automatic Schema Mapping"
-                  ] : [
-                    "MongoDB 4.4+ supported",
-                    "Atlas & Local compatible",
-                    "BSON to Metadata mapping",
-                    "Read-only recommendation"
-                  ]).map((item, i) => (
-                    <li key={i} className="flex items-center gap-3 text-slate-400 text-sm">
-                      <div className="size-1.5 bg-indigo-500 rounded-full shadow-[0_0_8px_rgba(99,102,241,0.6)]" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <AssessmentOptions options={options} onChange={setOptions} disabled={loading} />
+              <JobProgress job={job} ruleMode={options.ruleMode} narrative={options.narrative} />
 
               <div className="p-8 bg-gradient-to-br from-indigo-600/10 to-transparent border border-indigo-500/10 rounded-[2rem]">
                 <div className="flex items-center gap-3 mb-4">
@@ -208,7 +185,7 @@ const Table = ({ onResult }) => {
                     <span className="font-bold text-sm uppercase tracking-wider">Zero-Storage</span>
                 </div>
                 <p className="text-xs text-slate-500 leading-relaxed italic">
-                  "Your credentials are encrypted in transit and never persisted. Analysis runs against a volatile execution layer."
+                  Credentials are used only by the data-plane to read up to the configured row limit, are never stored in job state or the audit log, and rows are discarded once profiling and rule execution finish. Use a read-only account.
                 </p>
               </div>
             </div>

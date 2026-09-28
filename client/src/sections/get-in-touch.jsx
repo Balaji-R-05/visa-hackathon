@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 export default function GetInTouch() {
     return (
         <section className="flex flex-col items-center" id="contact">
-            <SectionTitle title="Join the Development" description="Interested in contributing to the future of payment data quality? We're looking for developers and fintech experts to help build the most robust auditing agent for the global financial ecosystem." />
+            <SectionTitle title="Feedback and Contributions" description="Assay is a hackathon project built for Shaastra 2026. Tell us what you would like it to score, or contribute on GitHub." />
             <form onSubmit={(e) => e.preventDefault()} className='grid sm:grid-cols-2 gap-3 sm:gap-5 max-w-3xl mx-auto text-slate-400 mt-16 w-full' >
                 <motion.div
                     initial={{ y: 150, opacity: 0 }}
@@ -40,7 +40,7 @@ export default function GetInTouch() {
 
                 <motion.button 
                     type='submit' 
-                    onClick={() => toast.success("Message sent! Our team will contact you soon.")}
+                    onClick={() => toast.info("This form is a demo and does not send messages. Please open an issue on GitHub.")}
                     className='w-max flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-full'
                     initial={{ y: 150, opacity: 0 }}
                     whileInView={{ y: 0, opacity: 1 }}

@@ -1,0 +1,28 @@
+{
+  "name": "dqs-data-plane",
+  "version": "3.0.0",
+  "description": "Ingestion, privacy-preserving profiling and rule execution. The only service that sees raw rows.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "test": "vitest run"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.13.2",
+    "csv-parser": "^3.2.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "express-fileupload": "^1.5.2",
+    "mongodb": "^7.0.0",
+    "pg": "^8.16.3",
+    "redis": "^5.8.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11",
+    "supertest": "^7.2.2",
+    "vitest": "^4.1.0"
+  }
+}

@@ -12,13 +12,11 @@ import Api from './pages/Api'
 import Home from './pages/Home'
 import Result from './pages/Result'
 import Chatbot from './pages/Chatbot'
-import ResultTable from './pages/ResultTable'
-import ResultApi from './pages/ResultApi'
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState(() => {
-    const saved = localStorage.getItem("dqs_result");
+    const saved = localStorage.getItem("assay_result");
     return saved ? JSON.parse(saved) : null;
   });
   const navigate = useNavigate();
@@ -31,7 +29,7 @@ function App() {
       await new Promise(resolve => setTimeout(resolve, 100));
 
       setResult(data);
-      localStorage.setItem("dqs_result", JSON.stringify(data));
+      localStorage.setItem("assay_result", JSON.stringify(data));
       
       navigate('/result');
     } catch (error) {
@@ -53,8 +51,6 @@ function App() {
         <Route path="/api" element={<Api onResult={handleFinishedAnalysis} />} />
         <Route path="/chat" element={<Chatbot auditContext={result} />} />
         <Route path="/result" element={<Result result={result} />} />
-        <Route path="/result-table" element={<ResultTable result={result} />} />
-        <Route path="/result-api" element={<ResultApi result={result} />} />
       </Routes>
     </div>
   );

@@ -9,7 +9,7 @@ import { chatWithAIStream } from "../api/api";
 
 const Chatbot = ({ auditContext }) => {
   const [messages, setMessages] = useState(() => {
-    const saved = localStorage.getItem("dqs_chat_history");
+    const saved = localStorage.getItem("assay_chat_history");
     return saved ? JSON.parse(saved) : [
       { role: "bot", content: "Audit complete. I've analyzed your data. How can I help you interpret these findings?" }
     ];
@@ -21,7 +21,7 @@ const Chatbot = ({ auditContext }) => {
 
   // Persist chat history
   useEffect(() => {
-    localStorage.setItem("dqs_chat_history", JSON.stringify(messages));
+    localStorage.setItem("assay_chat_history", JSON.stringify(messages));
   }, [messages]);
 
   // Robust Auto-scroll logic
@@ -73,7 +73,7 @@ const Chatbot = ({ auditContext }) => {
   const clearChat = () => {
     const initialMessage = [{ role: "bot", content: "Chat history cleared. How can I help with the audit?" }];
     setMessages(initialMessage);
-    localStorage.removeItem("dqs_chat_history");
+    localStorage.removeItem("assay_chat_history");
   };
 
   const suggestedQuestions = [

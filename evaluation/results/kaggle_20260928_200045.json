@@ -1,0 +1,2762 @@
+{
+ "config": {
+  "cmd": "run",
+  "datasets": "",
+  "modes": "builtin,hybrid",
+  "rows": 5000,
+  "seed": 42,
+  "narrative": false
+ },
+ "datasets": {
+  "card_fraud_simulated": {
+   "source": {
+    "name": "card_fraud_simulated",
+    "slug": "kartik2112/fraud-detection",
+    "file": "fraudTest.csv",
+    "jurisdiction": "US",
+    "why": "card numbers, names, DOB, addresses, US ZIP codes: PCI/PII detection and US rule pack"
+   },
+   "file": "fraudTest.csv",
+   "rows": 5000,
+   "columns": [
+    "",
+    "trans_date_trans_time",
+    "cc_num",
+    "merchant",
+    "category",
+    "amt",
+    "first",
+    "last",
+    "gender",
+    "street",
+    "city",
+    "state",
+    "zip",
+    "lat",
+    "long",
+    "city_pop",
+    "job",
+    "dob",
+    "trans_num",
+    "unix_time",
+    "merch_lat",
+    "merch_long",
+    "is_fraud"
+   ],
+   "modes": {
+    "builtin": {
+     "as_is": {
+      "composite_dqs": 0.8632,
+      "grade": "C (Fair)",
+      "dimension_scores": {
+       "Completeness": 1,
+       "Validity": 0.9781,
+       "Accuracy": 0.9778,
+       "Consistency": 0.903,
+       "Uniqueness": 1,
+       "Timeliness": 0
+      },
+      "not_applicable": [
+       "Integrity"
+      ],
+      "rules_by_source": {
+       "builtin": 31
+      },
+      "rules_rejected": [],
+      "derivation": null,
+      "semantic_types": {
+       "": "numeric",
+       "trans_date_trans_time": "timestamp",
+       "cc_num": "card_pan",
+       "merchant": "free_text",
+       "category": "categorical",
+       "amt": "monetary_amount",
+       "first": "string",
+       "last": "string",
+       "gender": "categorical",
+       "street": "free_text",
+       "city": "string",
+       "state": "categorical",
+       "zip": "numeric",
+       "lat": "numeric",
+       "long": "numeric",
+       "city_pop": "numeric",
+       "job": "free_text",
+       "dob": "timestamp",
+       "trans_num": "string",
+       "unix_time": "numeric",
+       "merch_lat": "numeric",
+       "merch_long": "numeric",
+       "is_fraud": "numeric"
+      },
+      "sensitive_columns": {
+       "cc_num": [
+        "pci"
+       ],
+       "dob": [
+        "kyc",
+        "pii"
+       ]
+      },
+      "prohibited_data": [
+       "Column 'cc_num' appears to hold unmasked card numbers; PCI DSS v4.0 Req. 3.5.1 requires PAN to be unreadable wherever stored."
+      ],
+      "findings": 5,
+      "timings_ms": {
+       "ingesting": 121,
+       "profiling": 334,
+       "executing_rules": 31,
+       "scoring": 10,
+       "auditing": 4
+      },
+      "grounding": null,
+      "evidence": {
+       "Completeness": [
+        {
+         "column": "",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "trans_date_trans_time",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "cc_num",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "merchant",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "category",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "amt",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "first",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "last",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "gender",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "street",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "city",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "state",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "zip",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "lat",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "long",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "city_pop",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "job",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "dob",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "trans_num",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "unix_time",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "merch_lat",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "merch_long",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "is_fraud",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        }
+       ],
+       "Validity": [
+        {
+         "column": "trans_date_trans_time",
+         "check": "date_parseable [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "cc_num",
+         "check": "luhn [builtin]",
+         "checked": 5000,
+         "violations": 367
+        },
+        {
+         "column": "amt",
+         "check": "range [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "state",
+         "check": "regex [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "zip",
+         "check": "regex [builtin]",
+         "checked": 5000,
+         "violations": 290
+        },
+        {
+         "column": "dob",
+         "check": "date_parseable [builtin]",
+         "checked": 5000,
+         "violations": 0
+        }
+       ],
+       "Accuracy": [
+        {
+         "column": "amt",
+         "check": "iqr_outlier [statistical]",
+         "checked": 5000,
+         "violations": 111
+        }
+       ],
+       "Consistency": [
+        {
+         "column": "cc_num",
+         "check": "fixed_format [statistical]",
+         "checked": 5000,
+         "violations": 2426
+        },
+        {
+         "column": "category",
+         "check": "case_variant [statistical]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "gender",
+         "check": "case_variant [statistical]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "state",
+         "check": "case_variant [statistical]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "trans_num",
+         "check": "fixed_format [statistical]",
+         "checked": 5000,
+         "violations": 0
+        }
+       ],
+       "Uniqueness": [
+        {
+         "column": "(all columns)",
+         "check": "duplicate_rows [statistical]",
+         "checked": 5000,
+         "violations": 0
+        }
+       ],
+       "Timeliness": [
+        {
+         "column": "trans_date_trans_time",
+         "check": "date_not_future+date_max_age [builtin]",
+         "checked": 5000,
+         "violations": 5000
+        }
+       ],
+       "Integrity": []
+      },
+      "llm_rules": [],
+      "optional_columns": []
+     },
+     "recovery": [
+      {
+       "defect": "missing",
+       "dimension": "Completeness",
+       "column": "merch_lat",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 250,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "missing",
+       "dimension": "Completeness",
+       "column": "merchant",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 250,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "duplicates",
+       "dimension": "Uniqueness",
+       "column": "(all columns)",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 0,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "case",
+       "dimension": "Consistency",
+       "column": "state",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 0,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "truncate",
+       "dimension": "Consistency",
+       "column": "trans_num",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 0,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "negative",
+       "dimension": "Validity",
+       "column": "amt",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 250,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "future",
+       "dimension": "Timeliness",
+       "column": "trans_date_trans_time",
+       "count": 250,
+       "detected_union": 0,
+       "detected_rule": 250,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      }
+     ]
+    },
+    "hybrid": {
+     "as_is": {
+      "composite_dqs": 0.8928,
+      "grade": "C (Fair)",
+      "dimension_scores": {
+       "Completeness": 1,
+       "Validity": 0.8484,
+       "Accuracy": 0.9889,
+       "Consistency": 0.903,
+       "Uniqueness": 1,
+       "Timeliness": 0.5
+      },
+      "not_applicable": [
+       "Integrity"
+      ],
+      "rules_by_source": {
+       "builtin": 31,
+       "llm": 11
+      },
+      "rules_rejected": [],
+      "derivation": {
+       "requested_mode": "hybrid",
+       "status": "ok",
+       "model": "groq/openai/gpt-oss-20b",
+       "local_model": false,
+       "latency_ms": 2205.2,
+       "proposed": 11,
+       "accepted_by_deriver": 11,
+       "citation_stats": {
+        "cited": 0,
+        "valid": 0,
+        "fabricated": [],
+        "precision": null,
+        "rules_with_citation": 0,
+        "uncited_regulations": 0
+       },
+       "policy_context": {
+        "retrieval": "none",
+        "clauses": []
+       },
+       "error": null
+      },
+      "semantic_types": {
+       "": "numeric",
+       "trans_date_trans_time": "timestamp",
+       "cc_num": "card_pan",
+       "merchant": "free_text",
+       "category": "categorical",
+       "amt": "monetary_amount",
+       "first": "string",
+       "last": "string",
+       "gender": "categorical",
+       "street": "free_text",
+       "city": "string",
+       "state": "categorical",
+       "zip": "numeric",
+       "lat": "numeric",
+       "long": "numeric",
+       "city_pop": "numeric",
+       "job": "free_text",
+       "dob": "timestamp",
+       "trans_num": "string",
+       "unix_time": "numeric",
+       "merch_lat": "numeric",
+       "merch_long": "numeric",
+       "is_fraud": "numeric"
+      },
+      "sensitive_columns": {
+       "cc_num": [
+        "pci"
+       ],
+       "dob": [
+        "kyc",
+        "pii"
+       ]
+      },
+      "prohibited_data": [
+       "Column 'cc_num' appears to hold unmasked card numbers; PCI DSS v4.0 Req. 3.5.1 requires PAN to be unreadable wherever stored."
+      ],
+      "findings": 6,
+      "timings_ms": {
+       "ingesting": 83,
+       "profiling": 297,
+       "deriving_rules": 2245,
+       "executing_rules": 72,
+       "scoring": 16,
+       "auditing": 10
+      },
+      "grounding": null,
+      "evidence": {
+       "Completeness": [
+        {
+         "column": "",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "trans_date_trans_time",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "cc_num",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "merchant",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "category",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "amt",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "first",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "last",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "gender",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "street",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "city",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "state",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "zip",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "lat",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "long",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "city_pop",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "job",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "dob",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "trans_num",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "unix_time",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "merch_lat",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "merch_long",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "is_fraud",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        }
+       ],
+       "Validity": [
+        {
+         "column": "trans_date_trans_time",
+         "check": "date_parseable [builtin/llm]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "cc_num",
+         "check": "luhn+range [builtin/llm]",
+         "checked": 5000,
+         "violations": 5000
+        },
+        {
+         "column": "amt",
+         "check": "range [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "state",
+         "check": "regex+allowed_values [builtin/llm]",
+         "checked": 5000,
+         "violations": 17
+        },
+        {
+         "column": "zip",
+         "check": "regex [builtin/llm]",
+         "checked": 5000,
+         "violations": 290
+        },
+        {
+         "column": "dob",
+         "check": "date_parseable [builtin/llm]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "is_fraud",
+         "check": "allowed_values [llm]",
+         "checked": 5000,
+         "violations": 0
+        }
+       ],
+       "Accuracy": [
+        {
+         "column": "amt",
+         "check": "range [llm]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "amt",
+         "check": "iqr_outlier [statistical]",
+         "checked": 5000,
+         "violations": 111
+        }
+       ],
+       "Consistency": [
+        {
+         "column": "cc_num",
+         "check": "fixed_format [statistical]",
+         "checked": 5000,
+         "violations": 2426
+        },
+        {
+         "column": "category",
+         "check": "case_variant [statistical]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "gender",
+         "check": "case_variant [statistical]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "state",
+         "check": "case_variant [statistical]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "trans_num",
+         "check": "fixed_format [statistical]",
+         "checked": 5000,
+         "violations": 0
+        }
+       ],
+       "Uniqueness": [
+        {
+         "column": "trans_num",
+         "check": "unique [llm]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "(all columns)",
+         "check": "duplicate_rows [statistical]",
+         "checked": 5000,
+         "violations": 0
+        }
+       ],
+       "Timeliness": [
+        {
+         "column": "trans_date_trans_time",
+         "check": "date_not_future+date_max_age [builtin/llm]",
+         "checked": 5000,
+         "violations": 5000
+        },
+        {
+         "column": "dob",
+         "check": "date_max_age [llm]",
+         "checked": 5000,
+         "violations": 0
+        }
+       ],
+       "Integrity": []
+      },
+      "llm_rules": [
+       {
+        "id": "L:Validity:luhn:cc_num:0",
+        "dimension": "Validity",
+        "type": "luhn",
+        "column": "cc_num",
+        "description": "Credit card numbers must pass the Luhn checksum.",
+        "regulation": null,
+        "checked": 5000,
+        "violations": 367
+       },
+       {
+        "id": "L:Validity:range:cc_num:1",
+        "dimension": "Validity",
+        "type": "range",
+        "column": "cc_num",
+        "description": "Credit card numbers must be 13 to 16 digits long.",
+        "regulation": null,
+        "checked": 5000,
+        "violations": 5000
+       },
+       {
+        "id": "L:Validity:regex:zip:2",
+        "dimension": "Validity",
+        "type": "regex",
+        "column": "zip",
+        "description": "ZIP codes must be five digits or five digits plus a hyphen and four digits.",
+        "regulation": null,
+        "checked": 5000,
+        "violations": 290
+       },
+       {
+        "id": "L:Validity:allowed_values:state:3",
+        "dimension": "Validity",
+        "type": "allowed_values",
+        "column": "state",
+        "description": "State codes must be one of the 50 US state abbreviations.",
+        "regulation": null,
+        "checked": 5000,
+        "violations": 17
+       },
+       {
+        "id": "L:Validity:date_parseable:trans_date_trans_time:4",
+        "dimension": "Validity",
+        "type": "date_parseable",
+        "column": "trans_date_trans_time",
+        "description": "Transaction timestamps must be valid dates and times.",
+        "regulation": null,
+        "checked": 5000,
+        "violations": 0
+       },
+       {
+        "id": "L:Timeliness:date_not_future:trans_date_trans_time:5",
+        "dimension": "Timeliness",
+        "type": "date_not_future",
+        "column": "trans_date_trans_time",
+        "description": "Transaction timestamps cannot be in the future.",
+        "regulation": null,
+        "checked": 5000,
+        "violations": 0
+       },
+       {
+        "id": "L:Validity:date_parseable:dob:6",
+        "dimension": "Validity",
+        "type": "date_parseable",
+        "column": "dob",
+        "description": "Date of birth must be a valid date.",
+        "regulation": null,
+        "checked": 5000,
+        "violations": 0
+       },
+       {
+        "id": "L:Timeliness:date_max_age:dob:7",
+        "dimension": "Timeliness",
+        "type": "date_max_age",
+        "column": "dob",
+        "description": "Date of birth must not be older than 120 years.",
+        "regulation": null,
+        "checked": 5000,
+        "violations": 0
+       },
+       {
+        "id": "L:Accuracy:range:amt:8",
+        "dimension": "Accuracy",
+        "type": "range",
+        "column": "amt",
+        "description": "Transaction amount must be greater than zero.",
+        "regulation": null,
+        "checked": 5000,
+        "violations": 0
+       },
+       {
+        "id": "L:Validity:allowed_values:is_fraud:9",
+        "dimension": "Validity",
+        "type": "allowed_values",
+        "column": "is_fraud",
+        "description": "Fraud flag must be 0 (not fraud) or 1 (fraud).",
+        "regulation": null,
+        "checked": 5000,
+        "violations": 0
+       },
+       {
+        "id": "L:Uniqueness:unique:trans_num:10",
+        "dimension": "Uniqueness",
+        "type": "unique",
+        "column": "trans_num",
+        "description": "Transaction number must be unique across the dataset.",
+        "regulation": null,
+        "checked": 5000,
+        "violations": 0
+       }
+      ],
+      "optional_columns": []
+     },
+     "recovery": [
+      {
+       "defect": "missing",
+       "dimension": "Completeness",
+       "column": "merch_lat",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 250,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "missing",
+       "dimension": "Completeness",
+       "column": "merchant",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 250,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "duplicates",
+       "dimension": "Uniqueness",
+       "column": "(all columns)",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 0,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "case",
+       "dimension": "Consistency",
+       "column": "state",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 0,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "truncate",
+       "dimension": "Consistency",
+       "column": "trans_num",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 0,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "negative",
+       "dimension": "Validity",
+       "column": "amt",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 250,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "future",
+       "dimension": "Timeliness",
+       "column": "trans_date_trans_time",
+       "count": 250,
+       "detected_union": 0,
+       "detected_rule": 250,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      }
+     ]
+    }
+   }
+  },
+  "bank_transactions": {
+   "source": {
+    "name": "bank_transactions",
+    "slug": "valakhorasani/bank-transaction-dataset-for-fraud-detection",
+    "file": "*.csv",
+    "jurisdiction": "GLOBAL",
+    "why": "IDs, amounts, two timestamps, device/IP fields: timeliness and cross-date rules"
+   },
+   "file": "bank_transactions_data_2.csv",
+   "rows": 2512,
+   "columns": [
+    "TransactionID",
+    "AccountID",
+    "TransactionAmount",
+    "TransactionDate",
+    "TransactionType",
+    "Location",
+    "DeviceID",
+    "IP Address",
+    "MerchantID",
+    "Channel",
+    "CustomerAge",
+    "CustomerOccupation",
+    "TransactionDuration",
+    "LoginAttempts",
+    "AccountBalance",
+    "PreviousTransactionDate"
+   ],
+   "modes": {
+    "builtin": {
+     "as_is": {
+      "composite_dqs": 0.8996,
+      "grade": "C (Fair)",
+      "dimension_scores": {
+       "Completeness": 1,
+       "Validity": 1,
+       "Accuracy": 0.9956,
+       "Consistency": 1,
+       "Uniqueness": 1,
+       "Timeliness": 0,
+       "Integrity": 1
+      },
+      "not_applicable": [],
+      "rules_by_source": {
+       "builtin": 25
+      },
+      "rules_rejected": [],
+      "derivation": null,
+      "semantic_types": {
+       "TransactionID": "identifier",
+       "AccountID": "string",
+       "TransactionAmount": "monetary_amount",
+       "TransactionDate": "timestamp",
+       "TransactionType": "categorical",
+       "Location": "categorical",
+       "DeviceID": "string",
+       "IP Address": "string",
+       "MerchantID": "string",
+       "Channel": "categorical",
+       "CustomerAge": "numeric",
+       "CustomerOccupation": "categorical",
+       "TransactionDuration": "numeric",
+       "LoginAttempts": "numeric",
+       "AccountBalance": "monetary_amount",
+       "PreviousTransactionDate": "timestamp"
+      },
+      "sensitive_columns": {
+       "IP Address": [
+        "kyc",
+        "pii"
+       ]
+      },
+      "prohibited_data": [],
+      "findings": 3,
+      "timings_ms": {
+       "ingesting": 22,
+       "profiling": 118,
+       "executing_rules": 8,
+       "scoring": 9,
+       "auditing": 5
+      },
+      "grounding": null,
+      "evidence": {
+       "Completeness": [
+        {
+         "column": "TransactionID",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "AccountID",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "TransactionAmount",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "TransactionDate",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "TransactionType",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "Location",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "DeviceID",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "IP Address",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "MerchantID",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "Channel",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "CustomerAge",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "CustomerOccupation",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "TransactionDuration",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "LoginAttempts",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "AccountBalance",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "PreviousTransactionDate",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        }
+       ],
+       "Validity": [
+        {
+         "column": "TransactionAmount",
+         "check": "range [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "TransactionDate",
+         "check": "date_parseable [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "AccountBalance",
+         "check": "range [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "PreviousTransactionDate",
+         "check": "date_parseable [builtin]",
+         "checked": 2512,
+         "violations": 0
+        }
+       ],
+       "Accuracy": [
+        {
+         "column": "TransactionAmount",
+         "check": "iqr_outlier [statistical]",
+         "checked": 2512,
+         "violations": 22
+        },
+        {
+         "column": "AccountBalance",
+         "check": "iqr_outlier [statistical]",
+         "checked": 2512,
+         "violations": 0
+        }
+       ],
+       "Consistency": [
+        {
+         "column": "TransactionID",
+         "check": "fixed_format [statistical]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "AccountID",
+         "check": "fixed_format [statistical]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "TransactionType",
+         "check": "case_variant [statistical]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "Location",
+         "check": "case_variant [statistical]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "DeviceID",
+         "check": "fixed_format [statistical]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "MerchantID",
+         "check": "fixed_format [statistical]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "Channel",
+         "check": "case_variant [statistical]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "CustomerOccupation",
+         "check": "case_variant [statistical]",
+         "checked": 2512,
+         "violations": 0
+        }
+       ],
+       "Uniqueness": [
+        {
+         "column": "(all columns)",
+         "check": "duplicate_rows [statistical]",
+         "checked": 2512,
+         "violations": 0
+        }
+       ],
+       "Timeliness": [
+        {
+         "column": "TransactionDate",
+         "check": "date_not_future+date_max_age [builtin]",
+         "checked": 2512,
+         "violations": 2512
+        },
+        {
+         "column": "PreviousTransactionDate",
+         "check": "date_not_future+date_max_age [builtin]",
+         "checked": 2512,
+         "violations": 2512
+        }
+       ],
+       "Integrity": [
+        {
+         "column": "TransactionID",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        }
+       ]
+      },
+      "llm_rules": [],
+      "optional_columns": []
+     },
+     "recovery": [
+      {
+       "defect": "missing",
+       "dimension": "Completeness",
+       "column": "TransactionDate",
+       "count": 125,
+       "detected_union": 125,
+       "detected_rule": 125,
+       "detected_delta": 125,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "missing",
+       "dimension": "Completeness",
+       "column": "TransactionID",
+       "count": 125,
+       "detected_union": 125,
+       "detected_rule": 125,
+       "detected_delta": 125,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "duplicates",
+       "dimension": "Uniqueness",
+       "column": "(all columns)",
+       "count": 125,
+       "detected_union": 125,
+       "detected_rule": 0,
+       "detected_delta": 125,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "case",
+       "skipped": "no candidate column"
+      },
+      {
+       "defect": "truncate",
+       "dimension": "Consistency",
+       "column": "TransactionID",
+       "count": 125,
+       "detected_union": 125,
+       "detected_rule": 0,
+       "detected_delta": 125,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "negative",
+       "dimension": "Validity",
+       "column": "TransactionAmount",
+       "count": 125,
+       "detected_union": 125,
+       "detected_rule": 125,
+       "detected_delta": 125,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "future",
+       "dimension": "Timeliness",
+       "column": "TransactionDate",
+       "count": 125,
+       "detected_union": 0,
+       "detected_rule": 125,
+       "detected_delta": 125,
+       "recovery": 1.0,
+       "assessed": true
+      }
+     ]
+    },
+    "hybrid": {
+     "as_is": {
+      "composite_dqs": 0.8943,
+      "grade": "C (Fair)",
+      "dimension_scores": {
+       "Completeness": 1,
+       "Validity": 0.9719,
+       "Accuracy": 0.9987,
+       "Consistency": 1,
+       "Uniqueness": 1,
+       "Timeliness": 0,
+       "Integrity": 1
+      },
+      "not_applicable": [],
+      "rules_by_source": {
+       "builtin": 25,
+       "llm": 15
+      },
+      "rules_rejected": [
+       {
+        "type": "regex",
+        "column": "IP Address",
+        "reason": "pattern has nested quantifiers (backtracking risk)"
+       }
+      ],
+      "derivation": {
+       "requested_mode": "hybrid",
+       "status": "ok",
+       "model": "groq/openai/gpt-oss-20b",
+       "local_model": false,
+       "latency_ms": 2160.1,
+       "proposed": 16,
+       "accepted_by_deriver": 15,
+       "citation_stats": {
+        "cited": 0,
+        "valid": 0,
+        "fabricated": [],
+        "precision": null,
+        "rules_with_citation": 0,
+        "uncited_regulations": 0
+       },
+       "policy_context": {
+        "retrieval": "none",
+        "clauses": []
+       },
+       "error": null
+      },
+      "semantic_types": {
+       "TransactionID": "identifier",
+       "AccountID": "string",
+       "TransactionAmount": "monetary_amount",
+       "TransactionDate": "timestamp",
+       "TransactionType": "categorical",
+       "Location": "categorical",
+       "DeviceID": "string",
+       "IP Address": "string",
+       "MerchantID": "string",
+       "Channel": "categorical",
+       "CustomerAge": "numeric",
+       "CustomerOccupation": "categorical",
+       "TransactionDuration": "numeric",
+       "LoginAttempts": "numeric",
+       "AccountBalance": "monetary_amount",
+       "PreviousTransactionDate": "timestamp"
+      },
+      "sensitive_columns": {
+       "IP Address": [
+        "kyc",
+        "pii"
+       ]
+      },
+      "prohibited_data": [],
+      "findings": 4,
+      "timings_ms": {
+       "ingesting": 24,
+       "profiling": 133,
+       "deriving_rules": 2216,
+       "executing_rules": 11,
+       "scoring": 6,
+       "auditing": 4
+      },
+      "grounding": null,
+      "evidence": {
+       "Completeness": [
+        {
+         "column": "TransactionID",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "AccountID",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "TransactionAmount",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "TransactionDate",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "TransactionType",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "Location",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "DeviceID",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "IP Address",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "MerchantID",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "Channel",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "CustomerAge",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "CustomerOccupation",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "TransactionDuration",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "LoginAttempts",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "AccountBalance",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "PreviousTransactionDate",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        }
+       ],
+       "Validity": [
+        {
+         "column": "TransactionAmount",
+         "check": "range [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "TransactionDate",
+         "check": "date_parseable [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "AccountBalance",
+         "check": "range [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "PreviousTransactionDate",
+         "check": "date_parseable [builtin]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "AccountID",
+         "check": "regex [llm]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "TransactionType",
+         "check": "allowed_values [llm]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "Location",
+         "check": "regex [llm]",
+         "checked": 2512,
+         "violations": 776
+        },
+        {
+         "column": "DeviceID",
+         "check": "regex [llm]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "MerchantID",
+         "check": "regex [llm]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "Channel",
+         "check": "allowed_values [llm]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "CustomerOccupation",
+         "check": "allowed_values [llm]",
+         "checked": 2512,
+         "violations": 0
+        }
+       ],
+       "Accuracy": [
+        {
+         "column": "TransactionAmount",
+         "check": "range [llm]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "CustomerAge",
+         "check": "range [llm]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "TransactionDuration",
+         "check": "range [llm]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "LoginAttempts",
+         "check": "range [llm]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "AccountBalance",
+         "check": "range [llm]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "TransactionAmount",
+         "check": "iqr_outlier [statistical]",
+         "checked": 2512,
+         "violations": 22
+        },
+        {
+         "column": "AccountBalance",
+         "check": "iqr_outlier [statistical]",
+         "checked": 2512,
+         "violations": 0
+        }
+       ],
+       "Consistency": [
+        {
+         "column": "TransactionID",
+         "check": "fixed_format [statistical]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "AccountID",
+         "check": "fixed_format [statistical]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "TransactionType",
+         "check": "case_variant [statistical]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "Location",
+         "check": "case_variant [statistical]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "DeviceID",
+         "check": "fixed_format [statistical]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "MerchantID",
+         "check": "fixed_format [statistical]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "Channel",
+         "check": "case_variant [statistical]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "CustomerOccupation",
+         "check": "case_variant [statistical]",
+         "checked": 2512,
+         "violations": 0
+        }
+       ],
+       "Uniqueness": [
+        {
+         "column": "TransactionID",
+         "check": "unique [llm]",
+         "checked": 2512,
+         "violations": 0
+        },
+        {
+         "column": "(all columns)",
+         "check": "duplicate_rows [statistical]",
+         "checked": 2512,
+         "violations": 0
+        }
+       ],
+       "Timeliness": [
+        {
+         "column": "TransactionDate",
+         "check": "date_not_future+date_max_age [builtin/llm]",
+         "checked": 2512,
+         "violations": 2512
+        },
+        {
+         "column": "PreviousTransactionDate",
+         "check": "date_not_future+date_max_age [builtin/llm]",
+         "checked": 2512,
+         "violations": 2512
+        }
+       ],
+       "Integrity": [
+        {
+         "column": "TransactionID",
+         "check": "not_null [builtin]",
+         "checked": 2512,
+         "violations": 0
+        }
+       ]
+      },
+      "llm_rules": [
+       {
+        "id": "L:Uniqueness:unique:TransactionID:0",
+        "dimension": "Uniqueness",
+        "type": "unique",
+        "column": "TransactionID",
+        "description": "Each transaction must have a unique identifier",
+        "regulation": null,
+        "checked": 2512,
+        "violations": 0
+       },
+       {
+        "id": "L:Validity:regex:AccountID:1",
+        "dimension": "Validity",
+        "type": "regex",
+        "column": "AccountID",
+        "description": "Account identifiers must follow the pattern AA99999",
+        "regulation": null,
+        "checked": 2512,
+        "violations": 0
+       },
+       {
+        "id": "L:Accuracy:range:TransactionAmount:2",
+        "dimension": "Accuracy",
+        "type": "range",
+        "column": "TransactionAmount",
+        "description": "Transaction amounts must be between 0.01 and 9999.99",
+        "regulation": null,
+        "checked": 2512,
+        "violations": 0
+       },
+       {
+        "id": "L:Timeliness:date_not_future:TransactionDate:3",
+        "dimension": "Timeliness",
+        "type": "date_not_future",
+        "column": "TransactionDate",
+        "description": "Transaction timestamps cannot be in the future",
+        "regulation": null,
+        "checked": 2512,
+        "violations": 0
+       },
+       {
+        "id": "L:Validity:allowed_values:TransactionType:4",
+        "dimension": "Validity",
+        "type": "allowed_values",
+        "column": "TransactionType",
+        "description": "Transaction type must be either Debit or Credit",
+        "regulation": null,
+        "checked": 2512,
+        "violations": 0
+       },
+       {
+        "id": "L:Validity:regex:Location:5",
+        "dimension": "Validity",
+        "type": "regex",
+        "column": "Location",
+        "description": "Location names must contain only letters",
+        "regulation": null,
+        "checked": 2512,
+        "violations": 776
+       },
+       {
+        "id": "L:Validity:regex:DeviceID:6",
+        "dimension": "Validity",
+        "type": "regex",
+        "column": "DeviceID",
+        "description": "Device identifiers must match pattern A999999",
+        "regulation": null,
+        "checked": 2512,
+        "violations": 0
+       },
+       {
+        "id": "L:Validity:regex:MerchantID:8",
+        "dimension": "Validity",
+        "type": "regex",
+        "column": "MerchantID",
+        "description": "Merchant identifiers must match pattern A999",
+        "regulation": null,
+        "checked": 2512,
+        "violations": 0
+       },
+       {
+        "id": "L:Validity:allowed_values:Channel:9",
+        "dimension": "Validity",
+        "type": "allowed_values",
+        "column": "Channel",
+        "description": "Channel must be Branch, ATM, or Online",
+        "regulation": null,
+        "checked": 2512,
+        "violations": 0
+       },
+       {
+        "id": "L:Accuracy:range:CustomerAge:10",
+        "dimension": "Accuracy",
+        "type": "range",
+        "column": "CustomerAge",
+        "description": "Customer age must be between 0 and 120",
+        "regulation": null,
+        "checked": 2512,
+        "violations": 0
+       },
+       {
+        "id": "L:Validity:allowed_values:CustomerOccupation:11",
+        "dimension": "Validity",
+        "type": "allowed_values",
+        "column": "CustomerOccupation",
+        "description": "Occupation must be one of the predefined categories",
+        "regulation": null,
+        "checked": 2512,
+        "violations": 0
+       },
+       {
+        "id": "L:Accuracy:range:TransactionDuration:12",
+        "dimension": "Accuracy",
+        "type": "range",
+        "column": "TransactionDuration",
+        "description": "Duration must be between 0 and 999 seconds",
+        "regulation": null,
+        "checked": 2512,
+        "violations": 0
+       },
+       {
+        "id": "L:Accuracy:range:LoginAttempts:13",
+        "dimension": "Accuracy",
+        "type": "range",
+        "column": "LoginAttempts",
+        "description": "Login attempts must be between 0 and 9",
+        "regulation": null,
+        "checked": 2512,
+        "violations": 0
+       },
+       {
+        "id": "L:Accuracy:range:AccountBalance:14",
+        "dimension": "Accuracy",
+        "type": "range",
+        "column": "AccountBalance",
+        "description": "Account balance must be between -9999.99 and 99999.99",
+        "regulation": null,
+        "checked": 2512,
+        "violations": 0
+       },
+       {
+        "id": "L:Timeliness:date_max_age:PreviousTransactionDate:15",
+        "dimension": "Timeliness",
+        "type": "date_max_age",
+        "column": "PreviousTransactionDate",
+        "description": "Previous transaction must be within the last 365 days",
+        "regulation": null,
+        "checked": 2512,
+        "violations": 2512
+       }
+      ],
+      "optional_columns": []
+     },
+     "recovery": [
+      {
+       "defect": "missing",
+       "dimension": "Completeness",
+       "column": "TransactionDate",
+       "count": 125,
+       "detected_union": 125,
+       "detected_rule": 125,
+       "detected_delta": 125,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "missing",
+       "dimension": "Completeness",
+       "column": "TransactionID",
+       "count": 125,
+       "detected_union": 125,
+       "detected_rule": 125,
+       "detected_delta": 125,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "duplicates",
+       "dimension": "Uniqueness",
+       "column": "(all columns)",
+       "count": 125,
+       "detected_union": 125,
+       "detected_rule": 0,
+       "detected_delta": 125,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "case",
+       "skipped": "no candidate column"
+      },
+      {
+       "defect": "truncate",
+       "dimension": "Consistency",
+       "column": "TransactionID",
+       "count": 125,
+       "detected_union": 125,
+       "detected_rule": 0,
+       "detected_delta": 125,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "negative",
+       "dimension": "Validity",
+       "column": "TransactionAmount",
+       "count": 125,
+       "detected_union": 125,
+       "detected_rule": 125,
+       "detected_delta": 125,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "future",
+       "dimension": "Timeliness",
+       "column": "TransactionDate",
+       "count": 125,
+       "detected_union": 0,
+       "detected_rule": 125,
+       "detected_delta": 125,
+       "recovery": 1.0,
+       "assessed": true
+      }
+     ]
+    }
+   }
+  },
+  "paysim": {
+   "source": {
+    "name": "paysim",
+    "slug": "ealaxi/paysim1",
+    "file": "*.csv",
+    "jurisdiction": "GLOBAL",
+    "why": "balances before/after each transfer: LLM-derived cross-column rules"
+   },
+   "file": "PS_20174392719_1491204439457_log.csv",
+   "rows": 5000,
+   "columns": [
+    "step",
+    "type",
+    "amount",
+    "nameOrig",
+    "oldbalanceOrg",
+    "newbalanceOrig",
+    "nameDest",
+    "oldbalanceDest",
+    "newbalanceDest",
+    "isFraud",
+    "isFlaggedFraud"
+   ],
+   "modes": {
+    "builtin": {
+     "as_is": {
+      "composite_dqs": 0.9465,
+      "grade": "B (Good)",
+      "dimension_scores": {
+       "Completeness": 1,
+       "Validity": 1,
+       "Accuracy": 0.9092,
+       "Consistency": 0.6896,
+       "Uniqueness": 1
+      },
+      "not_applicable": [
+       "Timeliness",
+       "Integrity"
+      ],
+      "rules_by_source": {
+       "builtin": 16
+      },
+      "rules_rejected": [],
+      "derivation": null,
+      "semantic_types": {
+       "step": "numeric",
+       "type": "categorical",
+       "amount": "monetary_amount",
+       "nameOrig": "string",
+       "oldbalanceOrg": "monetary_amount",
+       "newbalanceOrig": "monetary_amount",
+       "nameDest": "string",
+       "oldbalanceDest": "monetary_amount",
+       "newbalanceDest": "monetary_amount",
+       "isFraud": "numeric",
+       "isFlaggedFraud": "numeric"
+      },
+      "sensitive_columns": {
+       "nameOrig": [
+        "pii"
+       ],
+       "nameDest": [
+        "pii"
+       ]
+      },
+      "prohibited_data": [],
+      "findings": 7,
+      "timings_ms": {
+       "ingesting": 100,
+       "profiling": 131,
+       "executing_rules": 15,
+       "scoring": 11,
+       "auditing": 5
+      },
+      "grounding": null,
+      "evidence": {
+       "Completeness": [
+        {
+         "column": "step",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "type",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "amount",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "nameOrig",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "oldbalanceOrg",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "newbalanceOrig",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "nameDest",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "oldbalanceDest",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "newbalanceDest",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "isFraud",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "isFlaggedFraud",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        }
+       ],
+       "Validity": [
+        {
+         "column": "amount",
+         "check": "range [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "oldbalanceOrg",
+         "check": "range [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "newbalanceOrig",
+         "check": "range [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "oldbalanceDest",
+         "check": "range [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "newbalanceDest",
+         "check": "range [builtin]",
+         "checked": 5000,
+         "violations": 0
+        }
+       ],
+       "Accuracy": [
+        {
+         "column": "amount",
+         "check": "iqr_outlier [statistical]",
+         "checked": 5000,
+         "violations": 137
+        },
+        {
+         "column": "oldbalanceOrg",
+         "check": "iqr_outlier [statistical]",
+         "checked": 5000,
+         "violations": 726
+        },
+        {
+         "column": "newbalanceOrig",
+         "check": "iqr_outlier [statistical]",
+         "checked": 5000,
+         "violations": 686
+        },
+        {
+         "column": "oldbalanceDest",
+         "check": "iqr_outlier [statistical]",
+         "checked": 5000,
+         "violations": 378
+        },
+        {
+         "column": "newbalanceDest",
+         "check": "iqr_outlier [statistical]",
+         "checked": 5000,
+         "violations": 344
+        }
+       ],
+       "Consistency": [
+        {
+         "column": "type",
+         "check": "case_variant [statistical]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "nameOrig",
+         "check": "fixed_format [statistical]",
+         "checked": 5000,
+         "violations": 2367
+        },
+        {
+         "column": "nameDest",
+         "check": "fixed_format [statistical]",
+         "checked": 5000,
+         "violations": 2289
+        }
+       ],
+       "Uniqueness": [
+        {
+         "column": "(all columns)",
+         "check": "duplicate_rows [statistical]",
+         "checked": 5000,
+         "violations": 0
+        }
+       ],
+       "Timeliness": [],
+       "Integrity": []
+      },
+      "llm_rules": [],
+      "optional_columns": []
+     },
+     "recovery": [
+      {
+       "defect": "missing",
+       "dimension": "Completeness",
+       "column": "isFlaggedFraud",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 250,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "missing",
+       "dimension": "Completeness",
+       "column": "type",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 250,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "duplicates",
+       "dimension": "Uniqueness",
+       "column": "(all columns)",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 0,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "case",
+       "dimension": "Consistency",
+       "column": "type",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 0,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "truncate",
+       "skipped": "no candidate column"
+      },
+      {
+       "defect": "negative",
+       "dimension": "Validity",
+       "column": "amount",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 250,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "future",
+       "skipped": "no candidate column"
+      }
+     ]
+    },
+    "hybrid": {
+     "as_is": {
+      "composite_dqs": 0.9594,
+      "grade": "A (Excellent)",
+      "dimension_scores": {
+       "Completeness": 1,
+       "Validity": 1,
+       "Accuracy": 0.9447,
+       "Consistency": 0.6896,
+       "Uniqueness": 1,
+       "Integrity": 1
+      },
+      "not_applicable": [
+       "Timeliness"
+      ],
+      "rules_by_source": {
+       "builtin": 16,
+       "llm": 11
+      },
+      "rules_rejected": [],
+      "derivation": {
+       "requested_mode": "hybrid",
+       "status": "ok",
+       "model": "groq/openai/gpt-oss-20b",
+       "local_model": false,
+       "latency_ms": 2055.3,
+       "proposed": 11,
+       "accepted_by_deriver": 11,
+       "citation_stats": {
+        "cited": 0,
+        "valid": 0,
+        "fabricated": [],
+        "precision": null,
+        "rules_with_citation": 0,
+        "uncited_regulations": 0
+       },
+       "policy_context": {
+        "retrieval": "none",
+        "clauses": []
+       },
+       "error": null
+      },
+      "semantic_types": {
+       "step": "numeric",
+       "type": "categorical",
+       "amount": "monetary_amount",
+       "nameOrig": "string",
+       "oldbalanceOrg": "monetary_amount",
+       "newbalanceOrig": "monetary_amount",
+       "nameDest": "string",
+       "oldbalanceDest": "monetary_amount",
+       "newbalanceDest": "monetary_amount",
+       "isFraud": "numeric",
+       "isFlaggedFraud": "numeric"
+      },
+      "sensitive_columns": {
+       "nameOrig": [
+        "pii"
+       ],
+       "nameDest": [
+        "pii"
+       ]
+      },
+      "prohibited_data": [],
+      "findings": 12,
+      "timings_ms": {
+       "ingesting": 30,
+       "profiling": 115,
+       "deriving_rules": 2081,
+       "executing_rules": 19,
+       "scoring": 22,
+       "auditing": 8
+      },
+      "grounding": null,
+      "evidence": {
+       "Completeness": [
+        {
+         "column": "step",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "type",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "amount",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "nameOrig",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "oldbalanceOrg",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "newbalanceOrig",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "nameDest",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "oldbalanceDest",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "newbalanceDest",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "isFraud",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "isFlaggedFraud",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        }
+       ],
+       "Validity": [
+        {
+         "column": "amount",
+         "check": "range [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "oldbalanceOrg",
+         "check": "range [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "newbalanceOrig",
+         "check": "range [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "oldbalanceDest",
+         "check": "range [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "newbalanceDest",
+         "check": "range [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "step",
+         "check": "range [llm]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "type",
+         "check": "allowed_values [llm]",
+         "checked": 5000,
+         "violations": 0
+        }
+       ],
+       "Accuracy": [
+        {
+         "column": "amount",
+         "check": "range [llm]",
+         "checked": 5000,
+         "violations": 101
+        },
+        {
+         "column": "oldbalanceOrg",
+         "check": "range [llm]",
+         "checked": 5000,
+         "violations": 102
+        },
+        {
+         "column": "newbalanceOrig",
+         "check": "range [llm]",
+         "checked": 5000,
+         "violations": 104
+        },
+        {
+         "column": "oldbalanceDest",
+         "check": "range [llm]",
+         "checked": 5000,
+         "violations": 85
+        },
+        {
+         "column": "newbalanceDest",
+         "check": "range [llm]",
+         "checked": 5000,
+         "violations": 100
+        },
+        {
+         "column": "amount",
+         "check": "iqr_outlier [statistical]",
+         "checked": 5000,
+         "violations": 137
+        },
+        {
+         "column": "oldbalanceOrg",
+         "check": "iqr_outlier [statistical]",
+         "checked": 5000,
+         "violations": 726
+        },
+        {
+         "column": "newbalanceOrig",
+         "check": "iqr_outlier [statistical]",
+         "checked": 5000,
+         "violations": 686
+        },
+        {
+         "column": "oldbalanceDest",
+         "check": "iqr_outlier [statistical]",
+         "checked": 5000,
+         "violations": 378
+        },
+        {
+         "column": "newbalanceDest",
+         "check": "iqr_outlier [statistical]",
+         "checked": 5000,
+         "violations": 344
+        }
+       ],
+       "Consistency": [
+        {
+         "column": "type",
+         "check": "case_variant [statistical]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "nameOrig",
+         "check": "fixed_format [statistical]",
+         "checked": 5000,
+         "violations": 2367
+        },
+        {
+         "column": "nameDest",
+         "check": "fixed_format [statistical]",
+         "checked": 5000,
+         "violations": 2289
+        }
+       ],
+       "Uniqueness": [
+        {
+         "column": "(all columns)",
+         "check": "duplicate_rows [statistical]",
+         "checked": 5000,
+         "violations": 0
+        }
+       ],
+       "Timeliness": [],
+       "Integrity": [
+        {
+         "column": "nameOrig",
+         "check": "not_null [llm]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "nameDest",
+         "check": "not_null [llm]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "isFraud",
+         "check": "allowed_values [llm]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "isFlaggedFraud",
+         "check": "allowed_values [llm]",
+         "checked": 5000,
+         "violations": 0
+        }
+       ]
+      },
+      "llm_rules": [
+       {
+        "id": "L:Validity:range:step:0",
+        "dimension": "Validity",
+        "type": "range",
+        "column": "step",
+        "description": "Transaction step number must be a positive integer up to three digits",
+        "regulation": null,
+        "checked": 5000,
+        "violations": 0
+       },
+       {
+        "id": "L:Validity:allowed_values:type:1",
+        "dimension": "Validity",
+        "type": "allowed_values",
+        "column": "type",
+        "description": "Transaction type must be one of the predefined payment operation codes",
+        "regulation": null,
+        "checked": 5000,
+        "violations": 0
+       },
+       {
+        "id": "L:Accuracy:range:amount:2",
+        "dimension": "Accuracy",
+        "type": "range",
+        "column": "amount",
+        "description": "Transaction amount must be a positive monetary value up to two decimal places",
+        "regulation": null,
+        "checked": 5000,
+        "violations": 101
+       },
+       {
+        "id": "L:Integrity:not_null:nameOrig:3",
+        "dimension": "Integrity",
+        "type": "not_null",
+        "column": "nameOrig",
+        "description": "Originator name must be present for every transaction",
+        "regulation": null,
+        "checked": 5000,
+        "violations": 0
+       },
+       {
+        "id": "L:Accuracy:range:oldbalanceOrg:4",
+        "dimension": "Accuracy",
+        "type": "range",
+        "column": "oldbalanceOrg",
+        "description": "Originator old balance must be non\u2011negative and realistic",
+        "regulation": null,
+        "checked": 5000,
+        "violations": 102
+       },
+       {
+        "id": "L:Accuracy:range:newbalanceOrig:5",
+        "dimension": "Accuracy",
+        "type": "range",
+        "column": "newbalanceOrig",
+        "description": "Originator new balance must be non\u2011negative and realistic",
+        "regulation": null,
+        "checked": 5000,
+        "violations": 104
+       },
+       {
+        "id": "L:Integrity:not_null:nameDest:6",
+        "dimension": "Integrity",
+        "type": "not_null",
+        "column": "nameDest",
+        "description": "Destination name must be present for every transaction",
+        "regulation": null,
+        "checked": 5000,
+        "violations": 0
+       },
+       {
+        "id": "L:Accuracy:range:oldbalanceDest:7",
+        "dimension": "Accuracy",
+        "type": "range",
+        "column": "oldbalanceDest",
+        "description": "Destination old balance must be non\u2011negative and realistic",
+        "regulation": null,
+        "checked": 5000,
+        "violations": 85
+       },
+       {
+        "id": "L:Accuracy:range:newbalanceDest:8",
+        "dimension": "Accuracy",
+        "type": "range",
+        "column": "newbalanceDest",
+        "description": "Destination new balance must be non\u2011negative and realistic",
+        "regulation": null,
+        "checked": 5000,
+        "violations": 100
+       },
+       {
+        "id": "L:Integrity:allowed_values:isFraud:9",
+        "dimension": "Integrity",
+        "type": "allowed_values",
+        "column": "isFraud",
+        "description": "Fraud flag must be 0 (not fraud) or 1 (fraud)",
+        "regulation": null,
+        "checked": 5000,
+        "violations": 0
+       },
+       {
+        "id": "L:Integrity:allowed_values:isFlaggedFraud:10",
+        "dimension": "Integrity",
+        "type": "allowed_values",
+        "column": "isFlaggedFraud",
+        "description": "Flagged fraud indicator must be 0 or 1",
+        "regulation": null,
+        "checked": 5000,
+        "violations": 0
+       }
+      ],
+      "optional_columns": []
+     },
+     "recovery": [
+      {
+       "defect": "missing",
+       "dimension": "Completeness",
+       "column": "isFlaggedFraud",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 250,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "missing",
+       "dimension": "Completeness",
+       "column": "type",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 250,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "duplicates",
+       "dimension": "Uniqueness",
+       "column": "(all columns)",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 0,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "case",
+       "dimension": "Consistency",
+       "column": "type",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 0,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "truncate",
+       "skipped": "no candidate column"
+      },
+      {
+       "defect": "negative",
+       "dimension": "Validity",
+       "column": "amount",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 250,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "future",
+       "skipped": "no candidate column"
+      }
+     ]
+    }
+   }
+  }
+ }
+}

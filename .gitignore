@@ -13,3 +13,9 @@ rag*
 docs
 plagiarism
 .agent
+.local-logs/
+!.env.example
+
+# Downloaded datasets (licensed by their owners; not redistributed)
+data/*
+!data/README.md

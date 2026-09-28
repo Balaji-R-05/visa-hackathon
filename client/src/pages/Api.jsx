@@ -1,29 +1,30 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { apiData } from "../api/api.js";
-import { Database, Link2, ShieldCheck, ChevronRight, Sparkles, Loader2 } from "lucide-react";
+import { assessApi } from "../api/api.js";
+import AssessmentOptions, { DEFAULT_OPTIONS } from "../components/AssessmentOptions.jsx";
+import JobProgress from "../components/JobProgress.jsx";
+import { Link2, ShieldCheck, ChevronRight, Sparkles, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 
 const Api = ({ onResult }) => {
   const [apiLink, setapiLink] = useState("");
   const [loading, setLoading] = useState(false);
+  const [options, setOptions] = useState(DEFAULT_OPTIONS);
+  const [job, setJob] = useState(null);
   const navigate = useNavigate();
 
   const handleConnect = async () => {
     if (!apiLink) return;
     setLoading(true);
-    
+    setJob(null);
     try {
-      const data = await apiData({ apiUrl: apiLink });
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      toast.success("Connection successful");
-      if (onResult) onResult(data);
-      navigate("/result", { state: { data: data } });
-      console.log("Analysis Received:", data);
+      const finished = await assessApi({ apiUrl: apiLink }, options, setJob);
+      finished.warnings?.forEach((w) => toast.warn(w));
+      if (onResult) onResult(finished.report);
+      else navigate("/result");
     } catch (err) {
-      console.error("Connection failed", err);
-      toast.error("Connection failed. Please check the API endpoint.");
+      toast.error(`API assessment failed: ${err.message}`);
     } finally {
       setLoading(false);
     }
@@ -113,24 +114,8 @@ const Api = ({ onResult }) => {
 
             {/* Sidebar Cards */}
             <div className="space-y-6">
-              <div className="bg-white/[0.03] border border-white/10 rounded-[2rem] p-8">
-                <h4 className="flex items-center gap-3 text-lg font-bold mb-6 text-indigo-400">
-                  <Database className="size-5" /> Connection Specs
-                </h4>
-                <ul className="space-y-4">
-                  {[
-                    "REST/GraphQL Support",
-                    "SSL/TLS Encryption support",
-                    "JSON Payload Parsing",
-                    "Automatic Schema Mapping"
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-center gap-3 text-slate-400 text-sm">
-                      <div className="size-1.5 bg-indigo-500 rounded-full shadow-[0_0_8px_rgba(99,102,241,0.6)]" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <AssessmentOptions options={options} onChange={setOptions} disabled={loading} />
+              <JobProgress job={job} ruleMode={options.ruleMode} narrative={options.narrative} />
 
               <div className="p-8 bg-gradient-to-br from-indigo-600/10 to-transparent border border-indigo-500/10 rounded-[2rem]">
                 <div className="flex items-center gap-3 mb-4">
@@ -138,7 +123,7 @@ const Api = ({ onResult }) => {
                     <span className="font-bold text-sm uppercase tracking-wider">Zero-Storage</span>
                 </div>
                 <p className="text-xs text-slate-500 leading-relaxed italic">
-                  "Your endpoints are analyzed in real-time. We never cache or store the data payloads passing through the audit pipeline."
+                  The endpoint must return a JSON array of records. Private, loopback and cloud-metadata addresses are refused after DNS resolution, redirects are not followed, and payloads are discarded after profiling.
                 </p>
               </div>
             </div>

@@ -1,0 +1,16 @@
+# code: RBI_INFOSEC
+# title: RBI guidelines on information and cyber security (unofficial summary)
+# authority: summary
+RBI Guidelines on Information Security and Cyber Security
+
+1. Data Localization:
+Banks are required to ensure that all data related to payment systems is stored only in systems located in India. This data should include the full end-to-end transaction details / information collected / carried / processed as part of the message / payment instruction.
+
+2. Access Control:
+Banks should implement a robust access control mechanism for their critical systems. Multi-factor authentication (MFA) should be implemented for all administrative access to servers and network devices.
+
+3. Incident Reporting:
+Any cyber security incident must be reported to the RBI within 6 hours of detection. Banks should have a well-defined Incident Response (IR) plan.
+
+4. Customer Protection:
+In case of unauthorized electronic banking transactions, the liability of the customer is limited if the incident is reported within 3 working days. Banks must provide 24x7 channels for reporting unauthorized transactions.

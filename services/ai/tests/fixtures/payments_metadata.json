@@ -1,0 +1,1244 @@
+{
+ "dataset": {
+  "dataset_id": "71d90167-cfa9-47d5-a2b3-dade0fed5773",
+  "dataset_name": "payment_data_medium.csv",
+  "row_count": 1100,
+  "column_count": 11,
+  "detected_domain": "Payments",
+  "source_type": "csv",
+  "ingestion_timestamp": "2026-09-28T07:40:18.591Z"
+ },
+ "columns": [
+  {
+   "column_name": "transaction_id",
+   "inferred_data_type": "string",
+   "semantic_type": "identifier",
+   "sensitivity": [],
+   "is_key": true,
+   "null_count": 0,
+   "null_ratio": 0,
+   "unique_count": 1000,
+   "unique_ratio": 0.9090909090909091,
+   "shape_signatures": [
+    {
+     "shape": "AAA999999",
+     "share": 1
+    }
+   ],
+   "sample_values_masked": [
+    "***",
+    "***",
+    "***"
+   ]
+  },
+  {
+   "column_name": "customer_id",
+   "inferred_data_type": "string",
+   "semantic_type": "identifier",
+   "sensitivity": [],
+   "is_key": false,
+   "null_count": 170,
+   "null_ratio": 0.15454545454545454,
+   "unique_count": 795,
+   "unique_ratio": 0.7227272727272728,
+   "shape_signatures": [
+    {
+     "shape": "AAAA9999",
+     "share": 1
+    }
+   ],
+   "sample_values_masked": [
+    "***",
+    "***",
+    "***"
+   ]
+  },
+  {
+   "column_name": "amount",
+   "inferred_data_type": "numeric",
+   "semantic_type": "monetary_amount",
+   "sensitivity": [],
+   "is_key": false,
+   "null_count": 158,
+   "null_ratio": 0.14363636363636365,
+   "unique_count": 858,
+   "unique_ratio": 0.78,
+   "shape_signatures": [
+    {
+     "shape": "99999.99",
+     "share": 0.6549893842887473
+    },
+    {
+     "shape": "9999.99",
+     "share": 0.14968152866242038
+    },
+    {
+     "shape": "-99999.99",
+     "share": 0.06687898089171974
+    }
+   ],
+   "sample_values_masked": [
+    "***",
+    "***",
+    "***"
+   ]
+  },
+  {
+   "column_name": "currency",
+   "inferred_data_type": "string",
+   "semantic_type": "currency_code",
+   "sensitivity": [],
+   "is_key": false,
+   "null_count": 0,
+   "null_ratio": 0,
+   "unique_count": 8,
+   "unique_ratio": 0.007272727272727273,
+   "shape_signatures": [
+    {
+     "shape": "AAA",
+     "share": 0.8763636363636363
+    },
+    {
+     "shape": "aaa",
+     "share": 0.12363636363636364
+    }
+   ],
+   "sample_values_masked": [
+    "***",
+    "***",
+    "***"
+   ]
+  },
+  {
+   "column_name": "txn_timestamp",
+   "inferred_data_type": "datetime",
+   "semantic_type": "timestamp",
+   "sensitivity": [],
+   "is_key": false,
+   "null_count": 0,
+   "null_ratio": 0,
+   "unique_count": 423,
+   "unique_ratio": 0.3845454545454545,
+   "shape_signatures": [
+    {
+     "shape": "9999-99-99 99:99:99",
+     "share": 1
+    }
+   ],
+   "sample_values_masked": [
+    "***",
+    "***",
+    "***"
+   ]
+  },
+  {
+   "column_name": "merchant_name",
+   "inferred_data_type": "string",
+   "semantic_type": "categorical",
+   "sensitivity": [],
+   "is_key": false,
+   "null_count": 0,
+   "null_ratio": 0,
+   "unique_count": 15,
+   "unique_ratio": 0.013636363636363636,
+   "shape_signatures": [
+    {
+     "shape": "Aaaaaa",
+     "share": 0.19090909090909092
+    },
+    {
+     "shape": "Aaaaa",
+     "share": 0.14272727272727273
+    },
+    {
+     "shape": "AaaaAaAaaa",
+     "share": 0.12363636363636364
+    }
+   ],
+   "sample_values_masked": [
+    "***",
+    "***",
+    "***"
+   ]
+  },
+  {
+   "column_name": "payment_method",
+   "inferred_data_type": "string",
+   "semantic_type": "categorical",
+   "sensitivity": [],
+   "is_key": false,
+   "null_count": 0,
+   "null_ratio": 0,
+   "unique_count": 4,
+   "unique_ratio": 0.0036363636363636364,
+   "shape_signatures": [
+    {
+     "shape": "Aaaaa Aaaa",
+     "share": 0.2609090909090909
+    },
+    {
+     "shape": "Aaaaaa Aaaa",
+     "share": 0.2581818181818182
+    },
+    {
+     "shape": "AAA",
+     "share": 0.2509090909090909
+    }
+   ],
+   "sample_values_masked": [
+    "***",
+    "***",
+    "***"
+   ]
+  },
+  {
+   "column_name": "status",
+   "inferred_data_type": "string",
+   "semantic_type": "categorical",
+   "sensitivity": [],
+   "is_key": false,
+   "null_count": 0,
+   "null_ratio": 0,
+   "unique_count": 3,
+   "unique_ratio": 0.0027272727272727275,
+   "shape_signatures": [
+    {
+     "shape": "AAAAAAA",
+     "share": 0.7972727272727272
+    },
+    {
+     "shape": "AAAAAA",
+     "share": 0.20272727272727273
+    }
+   ],
+   "sample_values_masked": [
+    "***",
+    "***",
+    "***"
+   ]
+  },
+  {
+   "column_name": "pan_number",
+   "inferred_data_type": "string",
+   "semantic_type": "tax_id_pan",
+   "sensitivity": [
+    "kyc"
+   ],
+   "is_key": false,
+   "null_count": 0,
+   "null_ratio": 0,
+   "unique_count": 1000,
+   "unique_ratio": 0.9090909090909091,
+   "shape_signatures": [
+    {
+     "shape": "AAAAA9999A",
+     "share": 0.88
+    },
+    {
+     "shape": "AAA",
+     "share": 0.12
+    }
+   ],
+   "sample_values_masked": [
+    "***",
+    "***",
+    "***"
+   ]
+  },
+  {
+   "column_name": "email",
+   "inferred_data_type": "string",
+   "semantic_type": "email",
+   "sensitivity": [
+    "pii"
+   ],
+   "is_key": false,
+   "null_count": 171,
+   "null_ratio": 0.15545454545454546,
+   "unique_count": 790,
+   "unique_ratio": 0.7181818181818181,
+   "shape_signatures": [
+    {
+     "shape": "aaaaaa99@aaaaa.aaa",
+     "share": 0.09257265877287406
+    },
+    {
+     "shape": "aaaaa99@aaaaa.aaa",
+     "share": 0.09041980624327234
+    },
+    {
+     "shape": "aaaaa99@aaaaaaa.aa.aa",
+     "share": 0.061356297093649086
+    }
+   ],
+   "sample_values_masked": [
+    "***",
+    "***",
+    "***"
+   ]
+  },
+  {
+   "column_name": "kyc_address",
+   "inferred_data_type": "string",
+   "semantic_type": "free_text",
+   "sensitivity": [
+    "kyc",
+    "pii"
+   ],
+   "is_key": false,
+   "null_count": 166,
+   "null_ratio": 0.1509090909090909,
+   "unique_count": 834,
+   "unique_ratio": 0.7581818181818182,
+   "shape_signatures": [
+    {
+     "shape": "999, Aaaaaa, Aaaaaaa",
+     "share": 0.1006423982869379
+    },
+    {
+     "shape": "999, AA Aaaa, Aaaaaaa",
+     "share": 0.07066381156316917
+    },
+    {
+     "shape": "999, Aaaaaaa Aaaa, Aaaaa…(26)",
+     "share": 0.069593147751606
+    }
+   ],
+   "sample_values_masked": [
+    "***",
+    "***",
+    "***"
+   ]
+  }
+ ],
+ "numeric_stats": {
+  "amount": {
+   "min_value": -49741.57,
+   "max_value": 49966.57,
+   "mean": 20493.50673036091,
+   "negative_value_ratio": 0.09341825902335456
+  }
+ },
+ "categorical_stats": {
+  "transaction_id": {
+   "distinct_values": 1000,
+   "top_values": [],
+   "top_values_suppressed": true,
+   "values": []
+  },
+  "customer_id": {
+   "distinct_values": 795,
+   "top_values": [],
+   "top_values_suppressed": true,
+   "values": []
+  },
+  "currency": {
+   "distinct_values": 8,
+   "top_values": [
+    "USD",
+    "EUR",
+    "GBP"
+   ],
+   "top_values_suppressed": false,
+   "values": [
+    "USD",
+    "EUR",
+    "GBP",
+    "INR",
+    "gbp",
+    "inr",
+    "eur",
+    "usd"
+   ]
+  },
+  "txn_timestamp": {
+   "distinct_values": 423,
+   "top_values": [],
+   "top_values_suppressed": true,
+   "values": []
+  },
+  "merchant_name": {
+   "distinct_values": 15,
+   "top_values": [
+    "Amazon India",
+    "Myntra",
+    "DMart"
+   ],
+   "top_values_suppressed": false,
+   "values": [
+    "Amazon India",
+    "Myntra",
+    "DMart",
+    "Paytm",
+    "Croma",
+    "BigBasket",
+    "Reliance Digital",
+    "PhonePe",
+    "MakeMyTrip",
+    "Ola",
+    "Uber India",
+    "Swiggy",
+    "BookMyShow",
+    "Flipkart",
+    "Zomato"
+   ]
+  },
+  "payment_method": {
+   "distinct_values": 4,
+   "top_values": [
+    "Debit Card",
+    "Credit Card",
+    "UPI"
+   ],
+   "top_values_suppressed": false,
+   "values": [
+    "Debit Card",
+    "Credit Card",
+    "UPI",
+    "Net Banking"
+   ]
+  },
+  "status": {
+   "distinct_values": 3,
+   "top_values": [
+    "SUCCESS",
+    "PENDING",
+    "FAILED"
+   ],
+   "top_values_suppressed": false,
+   "values": [
+    "SUCCESS",
+    "PENDING",
+    "FAILED"
+   ]
+  },
+  "pan_number": {
+   "distinct_values": 1000,
+   "top_values": [],
+   "top_values_suppressed": true,
+   "values": []
+  },
+  "email": {
+   "distinct_values": 790,
+   "top_values": [],
+   "top_values_suppressed": true,
+   "values": []
+  },
+  "kyc_address": {
+   "distinct_values": 834,
+   "top_values": [],
+   "top_values_suppressed": true,
+   "values": []
+  }
+ },
+ "temporal_stats": {
+  "txn_timestamp": {
+   "min_timestamp": "2021-04-27T05:34:43.000Z",
+   "max_timestamp": "2027-08-26T05:34:43.000Z",
+   "future_timestamp_ratio": 0.04727272727272727,
+   "stale_record_ratio": 0.05545454545454546,
+   "freshness_window_days": 365,
+   "latest_record_age_days": 0
+  }
+ },
+ "patterns": {},
+ "format_stats": {
+  "transaction_id": {
+   "dominant_case_ratio": 1,
+   "dominant_length_ratio": 1,
+   "check": "fixed_format",
+   "check_description": "values deviating from the dominant length (9) or case (upper)",
+   "checked": 1100,
+   "violations": 0,
+   "violation_ratio": 0
+  },
+  "customer_id": {
+   "dominant_case_ratio": 1,
+   "dominant_length_ratio": 1,
+   "check": "fixed_format",
+   "check_description": "values deviating from the dominant length (8) or case (upper)",
+   "checked": 930,
+   "violations": 0,
+   "violation_ratio": 0
+  },
+  "currency": {
+   "dominant_case_ratio": 0.8763636363636363,
+   "dominant_length_ratio": 1,
+   "check": "case_variant",
+   "check_description": "values that are a non-dominant case/whitespace spelling of the same code",
+   "checked": 1100,
+   "violations": 136,
+   "violation_ratio": 0.12363636363636364
+  },
+  "merchant_name": {
+   "dominant_case_ratio": 1,
+   "dominant_length_ratio": 0.21818181818181817,
+   "check": "case_variant",
+   "check_description": "values that are a non-dominant case/whitespace spelling of the same code",
+   "checked": 1100,
+   "violations": 0,
+   "violation_ratio": 0
+  },
+  "payment_method": {
+   "dominant_case_ratio": 0.7490909090909091,
+   "dominant_length_ratio": 0.48818181818181816,
+   "check": "case_variant",
+   "check_description": "values that are a non-dominant case/whitespace spelling of the same code",
+   "checked": 1100,
+   "violations": 0,
+   "violation_ratio": 0
+  },
+  "status": {
+   "dominant_case_ratio": 1,
+   "dominant_length_ratio": 0.7972727272727272,
+   "check": "case_variant",
+   "check_description": "values that are a non-dominant case/whitespace spelling of the same code",
+   "checked": 1100,
+   "violations": 0,
+   "violation_ratio": 0
+  },
+  "pan_number": {
+   "dominant_case_ratio": 1,
+   "dominant_length_ratio": 0.88,
+   "check": "fixed_format",
+   "check_description": "values deviating from the dominant length (10) or case (upper)",
+   "checked": 1100,
+   "violations": 132,
+   "violation_ratio": 0.12
+  }
+ },
+ "accuracy_checks": {
+  "amount": {
+   "check": "iqr_outlier",
+   "check_description": "non-negative amounts beyond Q1/Q3 ± 3×IQR (plausibility proxy; no reference source available)",
+   "checked": 854,
+   "violations": 0,
+   "violation_ratio": 0
+  }
+ },
+ "cross_column_stats": {
+  "duplicates_detected": true,
+  "duplicate_row_count": 100,
+  "duplicate_row_ratio": 0.09090909090909091,
+  "key_columns": [
+   "transaction_id"
+  ],
+  "key_duplicate_ratio": {
+   "transaction_id": 0.09090909090909091
+  },
+  "dependent_nulls": []
+ },
+ "compliance_flags": {
+  "kyc_fields_present": true,
+  "monetary_fields_present": true,
+  "personal_data_present": true,
+  "pci_fields_present": false,
+  "sensitive_columns": {
+   "pan_number": [
+    "kyc"
+   ],
+   "email": [
+    "pii"
+   ],
+   "kyc_address": [
+    "kyc",
+    "pii"
+   ]
+  },
+  "prohibited_data": []
+ },
+ "governance": {
+  "extractor_version": "3.0.0",
+  "raw_values_included": false,
+  "value_level_fields": [
+   "categorical_stats.top_values (non-sensitive columns with <= 20 distinct values)",
+   "numeric_stats min/max/mean (non-sensitive columns)",
+   "temporal_stats min/max timestamps",
+   "columns[].shape_signatures (format masks such as AAAAA9999A; no characters of the value)"
+  ],
+  "suppressed_fields": [
+   "transaction_id: top values",
+   "customer_id: top values",
+   "txn_timestamp: top values",
+   "pan_number: top values",
+   "email: top values",
+   "kyc_address: top values"
+  ],
+  "rows_profiled": 1100,
+  "row_limit": null,
+  "possibly_truncated": false,
+  "processing": "in-memory in the data-plane; rows discarded when the job finishes"
+ },
+ "rule_evaluation": {
+  "jurisdiction": "IN",
+  "rule_mode": "builtin",
+  "optional_columns": [],
+  "rules": [
+   {
+    "id": "B:Completeness:not_null:transaction_id",
+    "source": "builtin",
+    "dimension": "Completeness",
+    "type": "not_null",
+    "column": "transaction_id",
+    "params": {},
+    "description": "transaction_id must be populated",
+    "rationale": "",
+    "regulation": null,
+    "status": "applied",
+    "checked": 1100,
+    "violations": 0,
+    "violation_ratio": 0
+   },
+   {
+    "id": "B:Integrity:not_null:transaction_id",
+    "source": "builtin",
+    "dimension": "Integrity",
+    "type": "not_null",
+    "column": "transaction_id",
+    "params": {},
+    "description": "key column transaction_id must never be empty",
+    "rationale": "",
+    "regulation": null,
+    "status": "applied",
+    "checked": 1100,
+    "violations": 0,
+    "violation_ratio": 0
+   },
+   {
+    "id": "B:Completeness:not_null:customer_id",
+    "source": "builtin",
+    "dimension": "Completeness",
+    "type": "not_null",
+    "column": "customer_id",
+    "params": {},
+    "description": "customer_id must be populated",
+    "rationale": "",
+    "regulation": null,
+    "status": "applied",
+    "checked": 1100,
+    "violations": 170,
+    "violation_ratio": 0.15454545454545454
+   },
+   {
+    "id": "B:Completeness:not_null:amount",
+    "source": "builtin",
+    "dimension": "Completeness",
+    "type": "not_null",
+    "column": "amount",
+    "params": {},
+    "description": "amount must be populated",
+    "rationale": "",
+    "regulation": null,
+    "status": "applied",
+    "checked": 1100,
+    "violations": 158,
+    "violation_ratio": 0.14363636363636365
+   },
+   {
+    "id": "B:Validity:range:amount",
+    "source": "builtin",
+    "dimension": "Validity",
+    "type": "range",
+    "column": "amount",
+    "params": {
+     "min": 0
+    },
+    "description": "amount must be numeric and non-negative",
+    "rationale": "",
+    "regulation": null,
+    "status": "applied",
+    "checked": 942,
+    "violations": 88,
+    "violation_ratio": 0.09341825902335456
+   },
+   {
+    "id": "B:Completeness:not_null:currency",
+    "source": "builtin",
+    "dimension": "Completeness",
+    "type": "not_null",
+    "column": "currency",
+    "params": {},
+    "description": "currency must be populated",
+    "rationale": "",
+    "regulation": null,
+    "status": "applied",
+    "checked": 1100,
+    "violations": 0,
+    "violation_ratio": 0
+   },
+   {
+    "id": "B:Validity:allowed_values:currency",
+    "source": "builtin",
+    "dimension": "Validity",
+    "type": "allowed_values",
+    "column": "currency",
+    "params": {
+     "values": [
+      "AED",
+      "AFN",
+      "ALL",
+      "AMD",
+      "ANG",
+      "AOA",
+      "ARS",
+      "AUD",
+      "AWG",
+      "AZN",
+      "BAM",
+      "BBD",
+      "BDT",
+      "BGN",
+      "BHD",
+      "BIF",
+      "BMD",
+      "BND",
+      "BOB",
+      "BRL",
+      "BSD",
+      "BTN",
+      "BWP",
+      "BYN",
+      "BZD",
+      "CAD",
+      "CDF",
+      "CHF",
+      "CLP",
+      "CNY",
+      "COP",
+      "CRC",
+      "CUP",
+      "CVE",
+      "CZK",
+      "DJF",
+      "DKK",
+      "DOP",
+      "DZD",
+      "EGP",
+      "ERN",
+      "ETB",
+      "EUR",
+      "FJD",
+      "FKP",
+      "GBP",
+      "GEL",
+      "GHS",
+      "GIP",
+      "GMD",
+      "GNF",
+      "GTQ",
+      "GYD",
+      "HKD",
+      "HNL",
+      "HTG",
+      "HUF",
+      "IDR",
+      "ILS",
+      "INR",
+      "IQD",
+      "IRR",
+      "ISK",
+      "JMD",
+      "JOD",
+      "JPY",
+      "KES",
+      "KGS",
+      "KHR",
+      "KMF",
+      "KPW",
+      "KRW",
+      "KWD",
+      "KYD",
+      "KZT",
+      "LAK",
+      "LBP",
+      "LKR",
+      "LRD",
+      "LSL",
+      "LYD",
+      "MAD",
+      "MDL",
+      "MGA",
+      "MKD",
+      "MMK",
+      "MNT",
+      "MOP",
+      "MRU",
+      "MUR",
+      "MVR",
+      "MWK",
+      "MXN",
+      "MYR",
+      "MZN",
+      "NAD",
+      "NGN",
+      "NIO",
+      "NOK",
+      "NPR",
+      "NZD",
+      "OMR",
+      "PAB",
+      "PEN",
+      "PGK",
+      "PHP",
+      "PKR",
+      "PLN",
+      "PYG",
+      "QAR",
+      "RON",
+      "RSD",
+      "RUB",
+      "RWF",
+      "SAR",
+      "SBD",
+      "SCR",
+      "SDG",
+      "SEK",
+      "SGD",
+      "SHP",
+      "SLE",
+      "SOS",
+      "SRD",
+      "SSP",
+      "STN",
+      "SVC",
+      "SYP",
+      "SZL",
+      "THB",
+      "TJS",
+      "TMT",
+      "TND",
+      "TOP",
+      "TRY",
+      "TTD",
+      "TWD",
+      "TZS",
+      "UAH",
+      "UGX",
+      "USD",
+      "UYU",
+      "UZS",
+      "VES",
+      "VND",
+      "VUV",
+      "WST",
+      "XAF",
+      "XCD",
+      "XOF",
+      "XPF",
+      "YER",
+      "ZAR",
+      "ZMW",
+      "ZWL"
+     ],
+     "case_sensitive": false
+    },
+    "description": "currency must be an ISO 4217 currency code",
+    "rationale": "",
+    "regulation": "ISO 4217",
+    "status": "applied",
+    "checked": 1100,
+    "violations": 0,
+    "violation_ratio": 0
+   },
+   {
+    "id": "B:Completeness:not_null:txn_timestamp",
+    "source": "builtin",
+    "dimension": "Completeness",
+    "type": "not_null",
+    "column": "txn_timestamp",
+    "params": {},
+    "description": "txn_timestamp must be populated",
+    "rationale": "",
+    "regulation": null,
+    "status": "applied",
+    "checked": 1100,
+    "violations": 0,
+    "violation_ratio": 0
+   },
+   {
+    "id": "B:Validity:date_parseable:txn_timestamp",
+    "source": "builtin",
+    "dimension": "Validity",
+    "type": "date_parseable",
+    "column": "txn_timestamp",
+    "params": {},
+    "description": "txn_timestamp must be a parseable date/time",
+    "rationale": "",
+    "regulation": null,
+    "status": "applied",
+    "checked": 1100,
+    "violations": 0,
+    "violation_ratio": 0
+   },
+   {
+    "id": "B:Timeliness:date_not_future:txn_timestamp",
+    "source": "builtin",
+    "dimension": "Timeliness",
+    "type": "date_not_future",
+    "column": "txn_timestamp",
+    "params": {
+     "tolerance_days": 1
+    },
+    "description": "txn_timestamp must not be in the future",
+    "rationale": "",
+    "regulation": null,
+    "status": "applied",
+    "checked": 1100,
+    "violations": 52,
+    "violation_ratio": 0.04727272727272727
+   },
+   {
+    "id": "B:Timeliness:date_max_age:txn_timestamp",
+    "source": "builtin",
+    "dimension": "Timeliness",
+    "type": "date_max_age",
+    "column": "txn_timestamp",
+    "params": {
+     "max_age_days": 365
+    },
+    "description": "txn_timestamp must be within the 365-day freshness window",
+    "rationale": "",
+    "regulation": null,
+    "status": "applied",
+    "checked": 1100,
+    "violations": 61,
+    "violation_ratio": 0.05545454545454546
+   },
+   {
+    "id": "B:Completeness:not_null:merchant_name",
+    "source": "builtin",
+    "dimension": "Completeness",
+    "type": "not_null",
+    "column": "merchant_name",
+    "params": {},
+    "description": "merchant_name must be populated",
+    "rationale": "",
+    "regulation": null,
+    "status": "applied",
+    "checked": 1100,
+    "violations": 0,
+    "violation_ratio": 0
+   },
+   {
+    "id": "B:Completeness:not_null:payment_method",
+    "source": "builtin",
+    "dimension": "Completeness",
+    "type": "not_null",
+    "column": "payment_method",
+    "params": {},
+    "description": "payment_method must be populated",
+    "rationale": "",
+    "regulation": null,
+    "status": "applied",
+    "checked": 1100,
+    "violations": 0,
+    "violation_ratio": 0
+   },
+   {
+    "id": "B:Completeness:not_null:status",
+    "source": "builtin",
+    "dimension": "Completeness",
+    "type": "not_null",
+    "column": "status",
+    "params": {},
+    "description": "status must be populated",
+    "rationale": "",
+    "regulation": null,
+    "status": "applied",
+    "checked": 1100,
+    "violations": 0,
+    "violation_ratio": 0
+   },
+   {
+    "id": "B:Completeness:not_null:pan_number",
+    "source": "builtin",
+    "dimension": "Completeness",
+    "type": "not_null",
+    "column": "pan_number",
+    "params": {},
+    "description": "pan_number must be populated",
+    "rationale": "",
+    "regulation": null,
+    "status": "applied",
+    "checked": 1100,
+    "violations": 0,
+    "violation_ratio": 0
+   },
+   {
+    "id": "B:Validity:regex:pan_number",
+    "source": "builtin",
+    "dimension": "Validity",
+    "type": "regex",
+    "column": "pan_number",
+    "params": {
+     "pattern": "^[A-Z]{5}[0-9]{4}[A-Z]$"
+    },
+    "description": "pan_number must match the Indian PAN format AAAAA9999A",
+    "rationale": "",
+    "regulation": "Income Tax Act, 1961 s.139A (PAN)",
+    "status": "applied",
+    "checked": 1100,
+    "violations": 132,
+    "violation_ratio": 0.12
+   },
+   {
+    "id": "B:Completeness:not_null:email",
+    "source": "builtin",
+    "dimension": "Completeness",
+    "type": "not_null",
+    "column": "email",
+    "params": {},
+    "description": "email must be populated",
+    "rationale": "",
+    "regulation": null,
+    "status": "applied",
+    "checked": 1100,
+    "violations": 171,
+    "violation_ratio": 0.15545454545454546
+   },
+   {
+    "id": "B:Validity:regex:email",
+    "source": "builtin",
+    "dimension": "Validity",
+    "type": "regex",
+    "column": "email",
+    "params": {
+     "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$"
+    },
+    "description": "email must be a well-formed email address",
+    "rationale": "",
+    "regulation": null,
+    "status": "applied",
+    "checked": 929,
+    "violations": 0,
+    "violation_ratio": 0
+   },
+   {
+    "id": "B:Completeness:not_null:kyc_address",
+    "source": "builtin",
+    "dimension": "Completeness",
+    "type": "not_null",
+    "column": "kyc_address",
+    "params": {},
+    "description": "kyc_address must be populated",
+    "rationale": "",
+    "regulation": null,
+    "status": "applied",
+    "checked": 1100,
+    "violations": 166,
+    "violation_ratio": 0.1509090909090909
+   },
+   {
+    "id": "B:Integrity:conditional_required:currency",
+    "source": "builtin",
+    "dimension": "Integrity",
+    "type": "conditional_required",
+    "column": "currency",
+    "params": {
+     "when_column": "amount"
+    },
+    "description": "every amount must carry a currency",
+    "rationale": "",
+    "regulation": null,
+    "status": "applied",
+    "checked": 942,
+    "violations": 0,
+    "violation_ratio": 0
+   }
+  ],
+  "rejected": [],
+  "column_checks": [
+   {
+    "dimension": "Completeness",
+    "column": "transaction_id",
+    "rule_ids": [
+     "B:Completeness:not_null:transaction_id"
+    ],
+    "checked": 1100,
+    "violations": 0,
+    "violation_ratio": 0
+   },
+   {
+    "dimension": "Integrity",
+    "column": "transaction_id",
+    "rule_ids": [
+     "B:Integrity:not_null:transaction_id"
+    ],
+    "checked": 1100,
+    "violations": 0,
+    "violation_ratio": 0
+   },
+   {
+    "dimension": "Completeness",
+    "column": "customer_id",
+    "rule_ids": [
+     "B:Completeness:not_null:customer_id"
+    ],
+    "checked": 1100,
+    "violations": 170,
+    "violation_ratio": 0.15454545454545454
+   },
+   {
+    "dimension": "Completeness",
+    "column": "amount",
+    "rule_ids": [
+     "B:Completeness:not_null:amount"
+    ],
+    "checked": 1100,
+    "violations": 158,
+    "violation_ratio": 0.14363636363636365
+   },
+   {
+    "dimension": "Validity",
+    "column": "amount",
+    "rule_ids": [
+     "B:Validity:range:amount"
+    ],
+    "checked": 942,
+    "violations": 88,
+    "violation_ratio": 0.09341825902335456
+   },
+   {
+    "dimension": "Completeness",
+    "column": "currency",
+    "rule_ids": [
+     "B:Completeness:not_null:currency"
+    ],
+    "checked": 1100,
+    "violations": 0,
+    "violation_ratio": 0
+   },
+   {
+    "dimension": "Validity",
+    "column": "currency",
+    "rule_ids": [
+     "B:Validity:allowed_values:currency"
+    ],
+    "checked": 1100,
+    "violations": 0,
+    "violation_ratio": 0
+   },
+   {
+    "dimension": "Completeness",
+    "column": "txn_timestamp",
+    "rule_ids": [
+     "B:Completeness:not_null:txn_timestamp"
+    ],
+    "checked": 1100,
+    "violations": 0,
+    "violation_ratio": 0
+   },
+   {
+    "dimension": "Validity",
+    "column": "txn_timestamp",
+    "rule_ids": [
+     "B:Validity:date_parseable:txn_timestamp"
+    ],
+    "checked": 1100,
+    "violations": 0,
+    "violation_ratio": 0
+   },
+   {
+    "dimension": "Timeliness",
+    "column": "txn_timestamp",
+    "rule_ids": [
+     "B:Timeliness:date_not_future:txn_timestamp",
+     "B:Timeliness:date_max_age:txn_timestamp"
+    ],
+    "checked": 1100,
+    "violations": 113,
+    "violation_ratio": 0.10272727272727272
+   },
+   {
+    "dimension": "Completeness",
+    "column": "merchant_name",
+    "rule_ids": [
+     "B:Completeness:not_null:merchant_name"
+    ],
+    "checked": 1100,
+    "violations": 0,
+    "violation_ratio": 0
+   },
+   {
+    "dimension": "Completeness",
+    "column": "payment_method",
+    "rule_ids": [
+     "B:Completeness:not_null:payment_method"
+    ],
+    "checked": 1100,
+    "violations": 0,
+    "violation_ratio": 0
+   },
+   {
+    "dimension": "Completeness",
+    "column": "status",
+    "rule_ids": [
+     "B:Completeness:not_null:status"
+    ],
+    "checked": 1100,
+    "violations": 0,
+    "violation_ratio": 0
+   },
+   {
+    "dimension": "Completeness",
+    "column": "pan_number",
+    "rule_ids": [
+     "B:Completeness:not_null:pan_number"
+    ],
+    "checked": 1100,
+    "violations": 0,
+    "violation_ratio": 0
+   },
+   {
+    "dimension": "Validity",
+    "column": "pan_number",
+    "rule_ids": [
+     "B:Validity:regex:pan_number"
+    ],
+    "checked": 1100,
+    "violations": 132,
+    "violation_ratio": 0.12
+   },
+   {
+    "dimension": "Completeness",
+    "column": "email",
+    "rule_ids": [
+     "B:Completeness:not_null:email"
+    ],
+    "checked": 1100,
+    "violations": 171,
+    "violation_ratio": 0.15545454545454546
+   },
+   {
+    "dimension": "Validity",
+    "column": "email",
+    "rule_ids": [
+     "B:Validity:regex:email"
+    ],
+    "checked": 929,
+    "violations": 0,
+    "violation_ratio": 0
+   },
+   {
+    "dimension": "Completeness",
+    "column": "kyc_address",
+    "rule_ids": [
+     "B:Completeness:not_null:kyc_address"
+    ],
+    "checked": 1100,
+    "violations": 166,
+    "violation_ratio": 0.1509090909090909
+   },
+   {
+    "dimension": "Integrity",
+    "column": "currency",
+    "rule_ids": [
+     "B:Integrity:conditional_required:currency"
+    ],
+    "checked": 942,
+    "violations": 0,
+    "violation_ratio": 0
+   }
+  ]
+ }
+}

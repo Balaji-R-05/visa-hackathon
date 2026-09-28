@@ -1,12 +1,12 @@
-# DQS-AI Frontend 🚀
+# Assay Frontend 🚀
 
-The official React-based dashboard for **DQS-AI** (Data Quality Service AI). This frontend provides an intuitive interface for payment professionals and auditors to analyze datasets, connect to live databases, and interact with the GenAI-powered Auditor Agent.
+The official React-based dashboard for **Assay**. This frontend provides an intuitive interface for payment professionals and auditors to analyze datasets, connect to live databases, and interact with the GenAI-powered Auditor Agent.
 
 ## ✨ Features
 
 - **Multi-Source Analysis**: Upload CSVs, connect to PostgreSQL/MongoDB, or analyze REST API endpoints.
 - **Explainable AI Insights**: View detailed Data Quality Scores (0-100) with natural language explanations for every anomaly.
-- **Interactive Chat Auditor**: Real-time streaming chat with a specialized AI agent (DQS-AI) to discuss remediation steps and regulatory risks.
+- **Interactive Chat Auditor**: Real-time streaming chat with a specialized AI agent (Assay) to discuss remediation steps and regulatory risks.
 - **Remediation Reports**: Generate and export downloadable Markdown reports with prioritized fix actions.
 - **Premium UI/UX**: Built with a sleek dark-mode aesthetic, smooth Framer Motion animations, and responsive layouts.
 

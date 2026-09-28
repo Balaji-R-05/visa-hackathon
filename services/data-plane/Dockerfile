@@ -1,0 +1,29 @@
+FROM node:20-alpine AS deps
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
+
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY . .
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+
+RUN apk add --no-cache curl \
+    && addgroup -S appgroup && adduser -S appuser -G appgroup
+
+COPY --from=deps /app/node_modules ./node_modules
+
+COPY . .
+
+ENV NODE_ENV=production
+USER appuser
+
+EXPOSE 7000
+CMD ["node", "index.js"]

@@ -1,0 +1,699 @@
+{
+ "config": {
+  "cmd": "run",
+  "datasets": "creditcard_pca,aml_transactions",
+  "modes": "builtin",
+  "rows": 5000,
+  "seed": 42,
+  "narrative": false
+ },
+ "datasets": {
+  "creditcard_pca": {
+   "source": {
+    "name": "creditcard_pca",
+    "slug": "mlg-ulb/creditcardfraud",
+    "file": "creditcard.csv",
+    "jurisdiction": "EU",
+    "why": "anonymised numeric features: few rules apply, tests dimension applicability"
+   },
+   "file": "creditcard.csv",
+   "rows": 5000,
+   "columns": [
+    "Time",
+    "V1",
+    "V2",
+    "V3",
+    "V4",
+    "V5",
+    "V6",
+    "V7",
+    "V8",
+    "V9",
+    "V10",
+    "V11",
+    "V12",
+    "V13",
+    "V14",
+    "V15",
+    "V16",
+    "V17",
+    "V18",
+    "V19",
+    "V20",
+    "V21",
+    "V22",
+    "V23",
+    "V24",
+    "V25",
+    "V26",
+    "V27",
+    "V28",
+    "Amount",
+    "Class"
+   ],
+   "modes": {
+    "builtin": {
+     "as_is": {
+      "composite_dqs": 0.99,
+      "grade": "A (Excellent)",
+      "dimension_scores": {
+       "Completeness": 1,
+       "Validity": 1,
+       "Accuracy": 0.935,
+       "Uniqueness": 1
+      },
+      "not_applicable": [
+       "Consistency",
+       "Timeliness",
+       "Integrity"
+      ],
+      "rules_by_source": {
+       "builtin": 32
+      },
+      "rules_rejected": [],
+      "derivation": null,
+      "semantic_types": {
+       "Time": "numeric",
+       "V1": "numeric",
+       "V2": "numeric",
+       "V3": "numeric",
+       "V4": "numeric",
+       "V5": "numeric",
+       "V6": "numeric",
+       "V7": "numeric",
+       "V8": "numeric",
+       "V9": "numeric",
+       "V10": "numeric",
+       "V11": "numeric",
+       "V12": "numeric",
+       "V13": "numeric",
+       "V14": "numeric",
+       "V15": "numeric",
+       "V16": "numeric",
+       "V17": "numeric",
+       "V18": "numeric",
+       "V19": "numeric",
+       "V20": "numeric",
+       "V21": "numeric",
+       "V22": "numeric",
+       "V23": "numeric",
+       "V24": "numeric",
+       "V25": "numeric",
+       "V26": "numeric",
+       "V27": "numeric",
+       "V28": "numeric",
+       "Amount": "monetary_amount",
+       "Class": "numeric"
+      },
+      "sensitive_columns": {},
+      "prohibited_data": [],
+      "findings": 1,
+      "timings_ms": {
+       "ingesting": 183,
+       "profiling": 299,
+       "executing_rules": 23,
+       "scoring": 11,
+       "auditing": 5
+      },
+      "grounding": null,
+      "evidence": {
+       "Completeness": [
+        {
+         "column": "Time",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V1",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V2",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V3",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V4",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V5",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V6",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V7",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V8",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V9",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V10",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V11",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V12",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V13",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V14",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V15",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V16",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V17",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V18",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V19",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V20",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V21",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V22",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V23",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V24",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V25",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V26",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V27",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "V28",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "Amount",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "Class",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        }
+       ],
+       "Validity": [
+        {
+         "column": "Amount",
+         "check": "range [builtin]",
+         "checked": 5000,
+         "violations": 0
+        }
+       ],
+       "Accuracy": [
+        {
+         "column": "Amount",
+         "check": "iqr_outlier [statistical]",
+         "checked": 5000,
+         "violations": 325
+        }
+       ],
+       "Consistency": [],
+       "Uniqueness": [
+        {
+         "column": "(all columns)",
+         "check": "duplicate_rows [statistical]",
+         "checked": 5000,
+         "violations": 0
+        }
+       ],
+       "Timeliness": [],
+       "Integrity": []
+      },
+      "llm_rules": [],
+      "optional_columns": []
+     },
+     "recovery": [
+      {
+       "defect": "missing",
+       "dimension": "Completeness",
+       "column": "V20",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 250,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "missing",
+       "dimension": "Completeness",
+       "column": "V3",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 250,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "duplicates",
+       "dimension": "Uniqueness",
+       "column": "(all columns)",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 0,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "case",
+       "skipped": "no candidate column"
+      },
+      {
+       "defect": "truncate",
+       "skipped": "no candidate column"
+      },
+      {
+       "defect": "negative",
+       "dimension": "Validity",
+       "column": "Amount",
+       "count": 247,
+       "detected_union": 247,
+       "detected_rule": 247,
+       "detected_delta": 247,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "future",
+       "skipped": "no candidate column"
+      }
+     ]
+    }
+   }
+  },
+  "aml_transactions": {
+   "source": {
+    "name": "aml_transactions",
+    "slug": "ealtman2019/ibm-transactions-for-anti-money-laundering-aml",
+    "file": "HI-Small_Trans.csv",
+    "jurisdiction": "US",
+    "why": "account-to-account transfers with currencies and payment formats: AML framing"
+   },
+   "file": "HI-Small_Trans.csv",
+   "rows": 5000,
+   "columns": [
+    "Timestamp",
+    "From Bank",
+    "Account",
+    "To Bank",
+    "Account",
+    "Amount Received",
+    "Receiving Currency",
+    "Amount Paid",
+    "Payment Currency",
+    "Payment Format",
+    "Is Laundering"
+   ],
+   "modes": {
+    "builtin": {
+     "as_is": {
+      "composite_dqs": 0.8713,
+      "grade": "C (Fair)",
+      "dimension_scores": {
+       "Completeness": 1,
+       "Validity": 0.5,
+       "Accuracy": 0.857,
+       "Consistency": 0.9845,
+       "Uniqueness": 1,
+       "Integrity": 1
+      },
+      "not_applicable": [
+       "Timeliness"
+      ],
+      "rules_by_source": {
+       "builtin": 18
+      },
+      "rules_rejected": [],
+      "derivation": null,
+      "semantic_types": {
+       "Timestamp": "free_text",
+       "From Bank": "numeric",
+       "Account": "string",
+       "To Bank": "numeric",
+       "Amount Received": "monetary_amount",
+       "Receiving Currency": "currency_code",
+       "Amount Paid": "monetary_amount",
+       "Payment Currency": "currency_code",
+       "Payment Format": "categorical",
+       "Is Laundering": "numeric"
+      },
+      "sensitive_columns": {},
+      "prohibited_data": [],
+      "findings": 5,
+      "timings_ms": {
+       "ingesting": 87,
+       "profiling": 140,
+       "executing_rules": 23,
+       "scoring": 9,
+       "auditing": 4
+      },
+      "grounding": null,
+      "evidence": {
+       "Completeness": [
+        {
+         "column": "Timestamp",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "From Bank",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "Account",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "To Bank",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "Amount Received",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "Receiving Currency",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "Amount Paid",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "Payment Currency",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "Payment Format",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "Is Laundering",
+         "check": "not_null [builtin]",
+         "checked": 5000,
+         "violations": 0
+        }
+       ],
+       "Validity": [
+        {
+         "column": "Amount Received",
+         "check": "range [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "Receiving Currency",
+         "check": "allowed_values [builtin]",
+         "checked": 5000,
+         "violations": 5000
+        },
+        {
+         "column": "Amount Paid",
+         "check": "range [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "Payment Currency",
+         "check": "allowed_values [builtin]",
+         "checked": 5000,
+         "violations": 5000
+        }
+       ],
+       "Accuracy": [
+        {
+         "column": "Amount Received",
+         "check": "iqr_outlier [statistical]",
+         "checked": 5000,
+         "violations": 718
+        },
+        {
+         "column": "Amount Paid",
+         "check": "iqr_outlier [statistical]",
+         "checked": 5000,
+         "violations": 712
+        }
+       ],
+       "Consistency": [
+        {
+         "column": "Account",
+         "check": "fixed_format [statistical]",
+         "checked": 5000,
+         "violations": 311
+        },
+        {
+         "column": "Receiving Currency",
+         "check": "case_variant [statistical]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "Payment Currency",
+         "check": "case_variant [statistical]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "Payment Format",
+         "check": "case_variant [statistical]",
+         "checked": 5000,
+         "violations": 0
+        }
+       ],
+       "Uniqueness": [
+        {
+         "column": "(all columns)",
+         "check": "duplicate_rows [statistical]",
+         "checked": 5000,
+         "violations": 0
+        }
+       ],
+       "Timeliness": [],
+       "Integrity": [
+        {
+         "column": "Receiving Currency",
+         "check": "conditional_required [builtin]",
+         "checked": 5000,
+         "violations": 0
+        },
+        {
+         "column": "Payment Currency",
+         "check": "conditional_required [builtin]",
+         "checked": 5000,
+         "violations": 0
+        }
+       ]
+      },
+      "llm_rules": [],
+      "optional_columns": []
+     },
+     "recovery": [
+      {
+       "defect": "missing",
+       "dimension": "Completeness",
+       "column": "Is Laundering",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 250,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "missing",
+       "dimension": "Completeness",
+       "column": "From Bank",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 250,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "duplicates",
+       "dimension": "Uniqueness",
+       "column": "(all columns)",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 0,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "case",
+       "skipped": "no candidate column"
+      },
+      {
+       "defect": "truncate",
+       "dimension": "Consistency",
+       "column": "Account",
+       "count": 250,
+       "detected_union": 231,
+       "detected_rule": 0,
+       "detected_delta": 231,
+       "recovery": 0.924,
+       "assessed": true
+      },
+      {
+       "defect": "negative",
+       "dimension": "Validity",
+       "column": "Amount Received",
+       "count": 250,
+       "detected_union": 250,
+       "detected_rule": 250,
+       "detected_delta": 250,
+       "recovery": 1.0,
+       "assessed": true
+      },
+      {
+       "defect": "future",
+       "dimension": "Timeliness",
+       "column": "Timestamp",
+       "count": 250,
+       "detected_union": 0,
+       "detected_rule": 0,
+       "detected_delta": 0,
+       "recovery": 0.0,
+       "assessed": false
+      }
+     ]
+    }
+   }
+  }
+ }
+}

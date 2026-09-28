@@ -1,139 +1,119 @@
-import { nodeInstance, aiInstance } from "./axiosInstance";
+import { api, API_BASE_URL } from "./axiosInstance";
 
-const fetchAIAnalysis = async (metadata) => {
+export const JURISDICTIONS = [
+  { value: "GLOBAL", label: "Global (PCI DSS, ISO)" },
+  { value: "IN", label: "India (RBI, DPDP)" },
+  { value: "EU", label: "European Union (GDPR)" },
+  { value: "US", label: "United States (GLBA, BSA)" },
+];
+
+export const RULE_MODES = [
+  { value: "hybrid", label: "Hybrid", hint: "Built-in rules plus rules derived by the LLM from column profiles" },
+  { value: "builtin", label: "Built-in only", hint: "Deterministic rule library; no LLM involved in rules" },
+  { value: "llm", label: "LLM-derived", hint: "Rules proposed by the LLM, validated and executed deterministically" },
+];
+
+export const STAGES = [
+  ["queued", "Queued"],
+  ["ingesting", "Reading source"],
+  ["profiling", "Profiling columns (privacy-preserving)"],
+  ["deriving_rules", "Deriving jurisdiction rules"],
+  ["executing_rules", "Executing rules"],
+  ["scoring", "Scoring dimensions"],
+  ["explaining", "Writing explanations"],
+  ["auditing", "Recording audit entry"],
+];
+
+const errorMessage = (err) => err.response?.data?.error || err.response?.data?.message || err.message;
+
+/**
+ * Polls an assessment job until it completes, reporting each stage change.
+ * Resolves with the finished job (report included); rejects with a readable error.
+ */
+export const pollAssessment = async (jobId, onProgress, { intervalMs = 1500, timeoutMs = 15 * 60 * 1000 } = {}) => {
+  const started = Date.now();
+  while (Date.now() - started < timeoutMs) {
+    const { data: job } = await api.get(`/assessments/${jobId}`);
+    onProgress?.(job);
+    if (job.status === "completed") return job;
+    if (job.status === "failed") throw new Error(job.error || "Assessment failed");
+    await new Promise((r) => setTimeout(r, intervalMs));
+  }
+  throw new Error("Assessment timed out");
+};
+
+const run = async (startRequest, onProgress) => {
   try {
-    const aiRes = await aiInstance.post("/analyze-dqs", metadata);
-    return { ...metadata, ...aiRes.data };
-  } catch (error) {
-    console.error("AI Analysis failed, returning metadata only", error);
-    return metadata;
+    const { data } = await startRequest();
+    onProgress?.({ status: "queued", stage: "queued", job_id: data.job_id });
+    return await pollAssessment(data.job_id, onProgress);
+  } catch (err) {
+    throw new Error(errorMessage(err));
   }
 };
 
-export const evaluateDataset = async (file) => {
-  const formData = new FormData();
-  formData.append("file", file);
-
-  const metaRes = await nodeInstance.post(
-    "/csv",
-    formData,
-    { headers: { "Content-Type": "multipart/form-data" } }
-  );
-
-  return await fetchAIAnalysis(metaRes.data);
+export const assessCsv = (file, options, onProgress) => {
+  const form = new FormData();
+  form.append("file", file);
+  form.append("jurisdiction", options.jurisdiction);
+  form.append("rule_mode", options.ruleMode);
+  form.append("narrative", String(options.narrative));
+  form.append("freshness_days", String(options.freshnessDays ?? 365));
+  if (options.approvedRules) form.append("rules", JSON.stringify(options.approvedRules));
+  return run(() => api.post("/assessments/csv", form, { headers: { "Content-Type": "multipart/form-data" } }), onProgress);
 };
 
+const jsonOptions = (options) => ({
+  jurisdiction: options.jurisdiction,
+  rule_mode: options.ruleMode,
+  narrative: options.narrative,
+  freshness_days: options.freshnessDays ?? 365,
+  ...(options.approvedRules ? { rules: options.approvedRules } : {}),
+});
 
-export const getTableData = async ({ dbLink, tableName }) => {
-    try {
-        const res = await nodeInstance.post("/db/postgres", { 
-            connectionString:dbLink ,
-            tableName:tableName
-        });
-        return await fetchAIAnalysis(res.data);
-    } catch (error) {
-        console.error("Postgres Connection Error:", error.response?.data || error.message);
-        throw error;
-    }
-};
+export const assessPostgres = ({ dbLink, tableName }, options, onProgress) =>
+  run(() => api.post("/assessments/postgres", { connectionString: dbLink, tableName, ...jsonOptions(options) }), onProgress);
 
+export const assessMongo = ({ dbLink, dbName, collectionName }, options, onProgress) =>
+  run(() => api.post("/assessments/mongo", { uri: dbLink, dbName, collectionName, ...jsonOptions(options) }), onProgress);
 
-export const getMongoData = async ({ dbLink, dbName, collectionName }) => {
-    try {
-        const res = await nodeInstance.post("/db/mongo", { 
-            uri: dbLink,
-            dbName: dbName,
-            collectionName: collectionName
-        });
-        return await fetchAIAnalysis(res.data);
-    } catch (error) {
-        console.error("Mongo Connection Error:", error.response?.data || error.message);
-        throw error;
-    }
-};
-
-
-export const apiData = async ({ apiUrl }) => {
-    try {
-        const res = await nodeInstance.post("/source", { 
-            apiUrl:apiUrl
-        });
-        return await fetchAIAnalysis(res.data);
-    } catch (error) {
-        console.error("API Connection Error:", error.response?.data || error.message);
-        throw error;
-    }
-};
+export const assessApi = ({ apiUrl }, options, onProgress) =>
+  run(() => api.post("/assessments/api", { apiUrl, ...jsonOptions(options) }), onProgress);
 
 /**
- * Standard chat with the Auditor.
- */
-export const chatWithAI = async ({ auditContext, messages, userInput }) => {
-    try {
-        const res = await aiInstance.post("/chat", {
-            audit_context: auditContext,
-            messages: messages,
-            user_input: userInput
-        });
-        return res.data;
-    } catch (error) {
-        console.error("Chat Error:", error.response?.data || error.message);
-        throw error;
-    }
-};
-
-/**
- * Streaming chat with the Auditor. 
- * Uses fetch directly since axios doesn't support streams well out-of-the-box.
+ * Streaming chat with the auditor (server-sent events through the gateway).
  */
 export const chatWithAIStream = async ({ auditContext, messages, userInput, onChunk }) => {
-    const AI_URL = import.meta.env.VITE_AI_URL || "http://localhost:8000";
-    const response = await fetch(`${AI_URL}/chat/stream`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            audit_context: auditContext,
-            messages: messages,
-            user_input: userInput
-        })
-    });
+  const response = await fetch(`${API_BASE_URL}/chat/stream`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ audit_context: auditContext, messages, user_input: userInput }),
+  });
+  if (!response.ok) throw new Error("Stream request failed");
 
-    if (!response.ok) throw new Error("Stream request failed");
-
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    
-    while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        
-        const chunk = decoder.decode(value);
-        const lines = chunk.split("\n");
-        
-        for (const line of lines) {
-            if (line.startsWith("data: ")) {
-                const data = line.slice(6);
-                if (data === "[DONE]") return;
-                try {
-                    const parsed = JSON.parse(data);
-                    if (parsed.content) onChunk(parsed.content);
-                } catch (e) {
-                    console.error("Error parsing stream chunk", e);
-                }
-            }
-        }
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const events = buffer.split("\n\n");
+    buffer = events.pop();
+    for (const event of events) {
+      if (!event.startsWith("data: ")) continue;
+      const data = event.slice(6);
+      if (data === "[DONE]") return;
+      const parsed = JSON.parse(data);
+      if (parsed.error) throw new Error(parsed.error);
+      if (parsed.content) onChunk(parsed.content);
     }
+  }
 };
 
-/**
- * Exports the remediation report as Markdown.
- */
-export const exportReport = async (analysis) => {
-    try {
-        const res = await aiInstance.post("/export-report", analysis);
-        return res.data.markdown;
-    } catch (error) {
-        console.error("Export Error:", error.response?.data || error.message);
-        throw error;
-    }
+export const exportReport = async (report) => {
+  const { data } = await api.post("/reports/export", report);
+  return data.markdown;
 };
+
+export const verifyAuditLog = async () => (await api.get("/audit/verify")).data;

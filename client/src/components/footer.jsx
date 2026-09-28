@@ -1,3 +1,4 @@
+import Logo from "./Logo";
 import { motion } from "framer-motion";
 
 export default function Footer() {
@@ -10,10 +11,7 @@ export default function Footer() {
         >
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-14 border-t border-slate-800 pt-16">
                 <div className="sm:col-span-2 lg:col-span-1">
-                    <div className="flex items-center gap-2">
-                        <img className="h-8 w-auto" src="/assets/logo.svg" width={138} height={36} alt="logo" />
-                        <span className="text-xl font-bold text-white tracking-tight">DQS-AI</span>
-                    </div>
+                    <Logo />
                     <p className="text-sm/7 mt-6 max-w-sm">
                         GenAI-Powered Data Quality Scoring Agent for Payments. Standardizing integrity, transparency, and compliance in global financial datasets.
                     </p>
@@ -40,8 +38,8 @@ export default function Footer() {
                 </div>
             </div>
             <p className="py-8 text-center border-t mt-12 border-slate-800 text-xs">
-                Copyright 2026 © DQS-AI. All Rights Reserved. Built with ❤️ for Shaastra.
+                Copyright 2026 © Assay. All Rights Reserved. Built with ❤️ for Shaastra.
             </p>
         </motion.footer>
     );
-};
+};

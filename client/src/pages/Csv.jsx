@@ -1,12 +1,19 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, CheckCircle, BarChart3, X, FileText, ChevronRight } from "lucide-react";
-import { evaluateDataset } from "../api/api.js";
+import { Upload, CheckCircle, X, FileText, ChevronRight } from "lucide-react";
+import { toast } from "react-toastify";
+import { assessCsv } from "../api/api.js";
 import { SAMPLE_ANALYSIS_RESULT } from "../api/sampleData.js";
-import {useNavigate} from "react-router";
+import { useNavigate } from "react-router";
+import AssessmentOptions, { DEFAULT_OPTIONS } from "../components/AssessmentOptions.jsx";
+import JobProgress from "../components/JobProgress.jsx";
+import DataPreview from "../components/DataPreview.jsx";
+
 const Csv = ({ onResult }) => {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [options, setOptions] = useState(DEFAULT_OPTIONS);
+  const [job, setJob] = useState(null);
   const [fileName, setFileName] = useState("");
   const [dragActive, setDragActive] = useState(false);
   const navigate = useNavigate();
@@ -29,7 +36,7 @@ const Csv = ({ onResult }) => {
     e.stopPropagation();
     setDragActive(false);
     const droppedFile = e.dataTransfer.files[0];
-    if (droppedFile && droppedFile.type === "text/csv") {
+    if (droppedFile && droppedFile.name.toLowerCase().endsWith(".csv")) {
       setFile(droppedFile);
       setFileName(droppedFile.name);
     }
@@ -38,13 +45,14 @@ const Csv = ({ onResult }) => {
   const handleUpload = async () => {
     if (!file) return;
     setLoading(true);
+    setJob(null);
     try {
-      const result = await evaluateDataset(file);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      if (onResult) onResult(result);
-      navigate('/result', { state: { data: result } });
+      const finished = await assessCsv(file, options, setJob);
+      finished.warnings?.forEach((w) => toast.warn(w));
+      if (onResult) onResult(finished.report);
+      else navigate("/result");
     } catch (err) {
-      console.error("Analysis failed", err);
+      toast.error(`Assessment failed: ${err.message}`);
     } finally {
       setLoading(false);
     }
@@ -54,9 +62,9 @@ const Csv = ({ onResult }) => {
     setLoading(true);
     setTimeout(() => {
       if (onResult) onResult(SAMPLE_ANALYSIS_RESULT);
-      navigate('/result', { state: { data: SAMPLE_ANALYSIS_RESULT } });
+      else navigate("/result");
       setLoading(false);
-    }, 1500);
+    }, 600);
   };
 
   return (
@@ -136,7 +144,7 @@ const Csv = ({ onResult }) => {
                   </h3>
                   
                   <p className="text-slate-500 mb-10 text-center max-w-xs text-sm">
-                    {fileName ? "Ready for deep analysis" : "Accepting .CSV files (Max 25MB). All data is processed securely."}
+                    {fileName ? "Ready for analysis" : "Accepting .csv files up to 50 MB. Rows stay in the data-plane and are discarded after profiling."}
                   </p>
 
                   <AnimatePresence mode="wait">
@@ -180,24 +188,8 @@ const Csv = ({ onResult }) => {
 
             {/* Sidebar Cards */}
             <div className="space-y-6">
-              <div className="bg-white/[0.03] border border-white/10 rounded-[2rem] p-8">
-                <h4 className="flex items-center gap-3 text-lg font-bold mb-6 text-indigo-400">
-                  <BarChart3 className="size-5" /> Audit Metrics
-                </h4>
-                <div className="space-y-4">
-                  {[
-                    "Data Completeness",
-                    "Transaction Consistency",
-                    "Anomaly Intelligence",
-                    "Schema Validation"
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-center gap-3 text-slate-400 text-sm">
-                      <div className="size-1.5 bg-indigo-500 rounded-full shadow-[0_0_8px_rgba(99,102,241,0.6)]" />
-                      {item}
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <AssessmentOptions options={options} onChange={setOptions} disabled={loading} />
+              <JobProgress job={job} ruleMode={options.ruleMode} narrative={options.narrative} />
 
               <div className="p-8 bg-gradient-to-br from-indigo-600/10 to-transparent border border-indigo-500/10 rounded-[2rem]">
                 <div className="flex items-center gap-3 mb-4">
@@ -205,11 +197,13 @@ const Csv = ({ onResult }) => {
                     <span className="font-bold text-sm uppercase tracking-wider">Privacy First</span>
                 </div>
                 <p className="text-xs text-slate-500 leading-relaxed italic">
-                  "Your data is processed locally within our secure VPC. We ensure SOC2 compliance across all analysis pipelines."
+                  Only aggregate metadata (counts, ratios, format masks) leaves the data-plane. Scores are computed deterministically; LLMs only derive rules and write explanations, and every assessment is recorded in a tamper-evident audit log.
                 </p>
               </div>
             </div>
           </div>
+
+          <DataPreview file={file} />
         </motion.div>
       </div>
     </div>

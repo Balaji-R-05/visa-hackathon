@@ -1,63 +1,160 @@
+# Assay microservices.
+#   docker compose up --build                       # Groq (hosted LLM) for development
+#   docker compose --profile local-llm up --build   # adds Ollama; set LLM_PROVIDER=ollama in services/ai/.env
+#
+# Only the client (80) and gateway (5000) publish ports. The data-plane is the
+# only service that ever holds raw rows; Redis stores job metadata only.
+
+x-python-service: &python-service
+  build:
+    context: ./services/ai
+  image: assay-ai-services
+  env_file:
+    - path: ./services/ai/.env
+      required: false
+  environment: &python-env
+    INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN:-change-me-in-production}
+    POLICY_SERVICE_URL: http://policy-service:8000
+    OLLAMA_BASE_URL: http://ollama:11434
+  restart: unless-stopped
+  networks: [backend]
+
+x-internal-urls: &internal-urls
+  INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN:-change-me-in-production}
+  DATA_PLANE_URL: http://data-plane:7000
+  RULE_SERVICE_URL: http://rule-service:8000
+  SCORING_SERVICE_URL: http://scoring-service:8000
+  INSIGHT_SERVICE_URL: http://insight-service:8000
+  AUDIT_SERVICE_URL: http://audit-service:8000
+  POLICY_SERVICE_URL: http://policy-service:8000
+
 services:
-  # ── React Frontend (nginx) ────────────────────────────────
   client:
-    container_name: visa-client
+    container_name: dqs-client
     build:
       context: ./client
       dockerfile: Dockerfile.client
     ports:
       - "80:80"
-    env_file:
-      - ./client/.env
     depends_on:
-      server:
+      gateway:
         condition: service_healthy
     restart: unless-stopped
-    networks:
-      - visa-network
+    networks: [backend]
 
-  # ── Express API Server ────────────────────────────────────
-  server:
-    container_name: visa-server
+  gateway:
+    container_name: dqs-gateway
     build:
-      context: ./server
-      dockerfile: Dockerfile.server
+      context: ./services/gateway
     ports:
       - "5000:5000"
-    env_file:
-      - ./server/.env
+    environment:
+      <<: *internal-urls
+      PORT: 5000
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost,http://localhost:3000,http://localhost:5173}
     depends_on:
-      ai-services:
+      data-plane:
         condition: service_healthy
-    restart: unless-stopped
-    networks:
-      - visa-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      test: ["CMD", "curl", "-fs", "http://localhost:5000/api/health"]
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
+    networks: [backend]
 
-  # ── FastAPI AI Service ────────────────────────────────────
-  ai-services:
-    container_name: visa-ai-services
+  data-plane:
+    container_name: dqs-data-plane
     build:
-      context: ./ai-services
-      dockerfile: Dockerfile.ai-services
-    ports:
-      - "8000:8000"
-    env_file:
-      - ./ai-services/.env
-    restart: unless-stopped
-    networks:
-      - visa-network
+      context: ./services/data-plane
+    environment:
+      <<: *internal-urls
+      PORT: 7000
+      REDIS_URL: redis://redis:6379
+      JOB_CONCURRENCY: ${JOB_CONCURRENCY:-2}
+      DQ_DB_ROW_LIMIT: ${DQ_DB_ROW_LIMIT:-1000}
+    depends_on:
+      redis:
+        condition: service_healthy
+      scoring-service:
+        condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      test: ["CMD", "curl", "-fs", "http://localhost:7000/health"]
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
+    networks: [backend]
 
-# ── Shared Network ──────────────────────────────────────────
+  rule-service:
+    <<: *python-service
+    container_name: dqs-rule-service
+    environment:
+      <<: *python-env
+      SERVICE: rule_service
+
+  scoring-service:
+    <<: *python-service
+    container_name: dqs-scoring-service
+    environment:
+      <<: *python-env
+      SERVICE: scoring_service
+
+  insight-service:
+    <<: *python-service
+    container_name: dqs-insight-service
+    environment:
+      <<: *python-env
+      SERVICE: insight_service
+
+  audit-service:
+    <<: *python-service
+    container_name: dqs-audit-service
+    environment:
+      <<: *python-env
+      SERVICE: audit_service
+      AUDIT_LOG_PATH: /app/audit/audit_log.jsonl
+    volumes:
+      - audit-log:/app/audit
+
+  policy-service:
+    <<: *python-service
+    container_name: dqs-policy-service
+    environment:
+      <<: *python-env
+      SERVICE: policy_service
+      POLICY_CORPUS_DIR: /app/policy_corpus
+      POLICY_INDEX_DIR: /app/policy_index
+    volumes:
+      - ./services/ai/policy_corpus:/app/policy_corpus:ro
+      - policy-index:/app/policy_index
+
+  redis:
+    container_name: dqs-redis
+    image: redis:7-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]  # job state is ephemeral by design
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+    networks: [backend]
+
+  ollama:
+    container_name: dqs-ollama
+    image: ollama/ollama:latest
+    profiles: ["local-llm"]
+    volumes:
+      - ollama-models:/root/.ollama
+    restart: unless-stopped
+    networks: [backend]
+
+volumes:
+  audit-log:
+  policy-index:
+  ollama-models:
+
 networks:
-  visa-network:
+  backend:
     driver: bridge
