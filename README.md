@@ -18,19 +18,61 @@ The design separates what must be objective from what benefits from language mod
 
 ![Home](./images/home.png)
 
+## Screenshots
+
+<table>
+<tr>
+<td width="50%">
+<img src="./images/csv.png" alt="CSV audit upload"/>
+<p align="center"><sub>CSV upload — jurisdiction, rule mode (built-in / LLM-derived / hybrid) and freshness window are set before the run.</sub></p>
+</td>
+<td width="50%">
+<img src="./images/sql.png" alt="SQL database audit"/>
+<p align="center"><sub>Connect a live PostgreSQL table for direct auditing, same rule and jurisdiction controls.</sub></p>
+</td>
+</tr>
+<tr>
+<td width="50%">
+<img src="./images/nosql.png" alt="NoSQL database audit"/>
+<p align="center"><sub>MongoDB is supported the same way as SQL, via the shared data-plane connector layer.</sub></p>
+</td>
+<td width="50%">
+<img src="./images/api.png" alt="API endpoint audit"/>
+<p align="center"><sub>Or point Assay at a live API endpoint for direct payload auditing.</sub></p>
+</td>
+</tr>
+<tr>
+<td width="50%">
+<img src="./images/report.png" alt="Assessment report"/>
+<p align="center"><sub>Composite DQS, grounded summary and per-dimension scores with formulas and evidence, all engine-computed.</sub></p>
+</td>
+<td width="50%">
+<img src="./images/chatbot.png" alt="AI chat over a report"/>
+<p align="center"><sub>Ask follow-up questions about a finished report; answers are grounded in the same report data.</sub></p>
+</td>
+</tr>
+<tr>
+<td width="50%">
+<img src="./images/history.png" alt="Report history"/>
+<p align="center"><sub>Past assessments are kept locally so a report can be reopened without re-running it.</sub></p>
+</td>
+<td width="50%">
+<img src="./images/processing.png" alt="Batch processing in progress"/>
+<p align="center"><sub>A large CSV is split into batches client-side and assessed one at a time, with live per-batch progress.</sub></p>
+</td>
+</tr>
+<tr>
+<td width="50%">
+<img src="./images/batch.png" alt="Batch run summary"/>
+<p align="center"><sub>Aggregate view of a finished batch run; interrupted runs can be resumed by reselecting the same file.</sub></p>
+</td>
+<td width="50%"></td>
+</tr>
+</table>
+
 ## Architecture
 
-```
-client (React) ──► gateway ──► data-plane ── rows live here only ──────────────────────┐
-                    :5000       :7000   │ profile            ▲ approved/derived rules   │
-                                        ├──────────────────► rule-service ──► policy-service (RAG over regulations)
-                                        │ metadata + rule results                        │
-                                        ├──────────────────► scoring-service  (deterministic DQS)
-                                        │ report                                         │
-                                        ├──────────────────► insight-service  (LLM explanations, chat)
-                                        └──────────────────► audit-service    (hash-chained log)
-              job state (no data) ── redis                     LLM: Groq (dev) or Ollama (local)
-```
+![Architecture](./images/assay_architecture.png)
 
 | Service | Stack | Responsibility |
 |---|---|---|
@@ -42,6 +84,22 @@ client (React) ──► gateway ──► data-plane ── rows live here only
 | `services/ai` → `policy_service` | FastAPI, ChromaDB | Clause-aware chunking; hybrid retrieval (BM25 + ChromaDB with local ONNX embeddings) filtered by jurisdiction |
 | `services/ai` → `audit_service` | FastAPI | Append-only, hash-chained audit log with verification |
 | `client` | React, Vite, Tailwind | Upload/connect, jurisdiction and rule-mode selection, live progress, report |
+
+## Batch processing, resume and history
+
+- **Batch CSV runs.** A large CSV is split client-side into row-bounded slices (respecting quoted
+  multi-line fields, never holding more than one slice in memory) and assessed one batch at a time
+  against the gateway, so a single file isn't bound by the upload size limit. Each batch produces its
+  own report; the `/batch` page shows live per-batch progress and an aggregate view.
+- **Resumable runs.** Batch progress (and the in-flight job id) is mirrored to `localStorage`. If the
+  tab is closed or reloaded mid-run, reopening the app re-attaches to the job that was still running
+  and lets you resume the remaining batches by reselecting the same file — completed batches are
+  skipped. A single (non-batch) assessment left running on reload is resumed the same way via
+  `useResumeAssessment`.
+- **Local history.** The last 10 finished reports are kept in `localStorage` (nothing is sent
+  anywhere) and can be reopened from `/history` without re-running the assessment.
+- **Export.** Finished reports can be exported to PDF or CSV from the client, including an aggregate
+  PDF across a whole batch run.
 
 ## Privacy and governance
 

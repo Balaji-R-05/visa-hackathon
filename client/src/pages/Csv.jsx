@@ -2,12 +2,17 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Upload, CheckCircle, X, FileText, ChevronRight } from "lucide-react";
 import { toast } from "react-toastify";
-import { assessCsv } from "../api/api.js";
+import useResumeAssessment from "../hooks/useResumeAssessment.js";
+import ResumeBanner from "../components/ResumeBanner.jsx";
+import { assessCsv, MAX_UPLOAD_MB } from "../api/api.js";
 import { SAMPLE_ANALYSIS_RESULT } from "../api/sampleData.js";
 import { useNavigate } from "react-router";
 import AssessmentOptions, { DEFAULT_OPTIONS } from "../components/AssessmentOptions.jsx";
 import JobProgress from "../components/JobProgress.jsx";
 import DataPreview from "../components/DataPreview.jsx";
+import BatchPanel from "../components/BatchPanel.jsx";
+import BatchProgress from "../components/BatchProgress.jsx";
+import { useBatchRun } from "../utils/batchStore.js";
 
 const Csv = ({ onResult }) => {
   const [file, setFile] = useState(null);
@@ -16,13 +21,32 @@ const Csv = ({ onResult }) => {
   const [job, setJob] = useState(null);
   const [fileName, setFileName] = useState("");
   const [dragActive, setDragActive] = useState(false);
+  const [batchMode, setBatchMode] = useState(false);
   const navigate = useNavigate();
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-      setFileName(selectedFile.name);
+  const batchRun = useBatchRun();
+  // A batch run with no matching file selected (e.g. after a reload) is shown here so it is never hidden.
+  const orphanRun = batchRun.status !== "idle" && !(file && file.name === batchRun.fileName);
+  const resumedName = useResumeAssessment("csv", {
+    setLoading,
+    setJob,
+    onFinished: (finished) => {
+      finished.warnings?.forEach((w) => toast.warn(w));
+      if (onResult) onResult(finished.report);
+      else navigate("/result");
+    },
+  });
+  const acceptFile = (f) => {
+    if (!f) return;
+    if (f.size > MAX_UPLOAD_MB * 1024 * 1024) {
+      toast.info(`${f.name} is ${(f.size / 1024 / 1024).toFixed(0)} MB, above the ${MAX_UPLOAD_MB} MB single-upload limit. Use batch processing below.`);
     }
+    setFile(f);
+    setFileName(f.name);
+  };
+
+  const handleFileChange = (e) => {
+    acceptFile(e.target.files[0]);
+    e.target.value = "";
   };
 
   const handleDrag = (e) => {
@@ -36,14 +60,14 @@ const Csv = ({ onResult }) => {
     e.stopPropagation();
     setDragActive(false);
     const droppedFile = e.dataTransfer.files[0];
-    if (droppedFile && droppedFile.name.toLowerCase().endsWith(".csv")) {
-      setFile(droppedFile);
-      setFileName(droppedFile.name);
-    }
+    if (droppedFile && droppedFile.name.toLowerCase().endsWith(".csv")) acceptFile(droppedFile);
+    else if (droppedFile) toast.error("Only .csv files are supported.");
   };
 
+  const tooLarge = !!file && file.size > MAX_UPLOAD_MB * 1024 * 1024;
+
   const handleUpload = async () => {
-    if (!file) return;
+    if (!file || tooLarge) return;
     setLoading(true);
     setJob(null);
     try {
@@ -116,6 +140,15 @@ const Csv = ({ onResult }) => {
             )}
           </div>
 
+          <ResumeBanner name={resumedName} />
+
+          {orphanRun && (
+            <div className="mb-8 rounded-[2rem] border border-indigo-500/20 bg-indigo-500/[0.04] p-6 md:p-8">
+              <div className="font-bold text-sm uppercase tracking-wider mb-4">Batch run</div>
+              <BatchProgress run={batchRun} onOpen={(report) => onResult(report, { save: false })} resumeSlot={<span className="text-xs text-amber-200/80">Choose {batchRun.fileName} below to resume</span>} />
+            </div>
+          )}
+
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Upload Area */}
             <motion.div className="lg:col-span-2">
@@ -166,7 +199,8 @@ const Csv = ({ onResult }) => {
                       >
                         <button 
                           onClick={handleUpload}
-                          disabled={loading}
+                          disabled={loading || tooLarge}
+                          title={tooLarge ? `Over ${MAX_UPLOAD_MB} MB: use batch processing below` : undefined}
                           className="px-10 py-4 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-500 transition shadow-xl shadow-indigo-600/20 flex items-center gap-3 disabled:opacity-50"
                         >
                           {loading ? (
@@ -174,7 +208,7 @@ const Csv = ({ onResult }) => {
                           ) : "Start Analysis"}
                         </button>
                         <button 
-                          onClick={() => { setFile(null); setFileName(""); }}
+                          onClick={() => { setFile(null); setFileName(""); setBatchMode(false); }}
                           className="px-6 py-4 bg-white/5 border border-white/10 text-slate-300 rounded-2xl hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20 transition-all"
                         >
                           <X className="size-5" />
@@ -204,6 +238,10 @@ const Csv = ({ onResult }) => {
           </div>
 
           <DataPreview file={file} />
+          {file && (tooLarge || batchMode) && <BatchPanel file={file} options={options} onOpen={(report) => onResult(report, { save: false })} />}
+          {file && !tooLarge && !batchMode && (
+            <button onClick={() => setBatchMode(true)} className="mt-4 text-xs text-slate-500 hover:text-indigo-300 transition">Process this file in batches instead</button>
+          )}
         </motion.div>
       </div>
     </div>

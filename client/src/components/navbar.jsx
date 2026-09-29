@@ -4,10 +4,15 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router";
 import { Link, NavLink } from "react-router";
 import Logo from "./Logo";
+import { Layers } from "lucide-react";
+import { useBatchRun } from "../utils/batchStore";
 
 export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
+    const run = useBatchRun();
+    const batchActive = ["running", "stopping", "recovering"].includes(run.status);
+    const batchesDone = run.batches.filter((b) => b.status !== "running").length;
     const [scrolled, setScrolled] = useState(false);
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 8);
@@ -32,6 +37,10 @@ export default function Navbar() {
             href: "/chat",
             text: "AI Chat",
         },
+        {
+            href: "/history",
+            text: "History",
+        },
     ];
     return (
         <>
@@ -53,7 +62,13 @@ export default function Navbar() {
                     ))}
                 </div>
 
-                <div className="hidden lg:block space-x-3">
+                <div className="hidden lg:flex items-center gap-3">
+                    {run.status !== "idle" && (
+                        <Link to="/batch" className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-indigo-500/40 bg-indigo-500/10 text-xs font-semibold text-indigo-200 hover:bg-indigo-500/20 transition">
+                            <Layers className={`size-3.5 ${batchActive ? "animate-pulse" : ""}`} />
+                            {batchActive ? `Batch ${batchesDone + 1} running` : run.status === "interrupted" ? "Batch paused" : `Batch done (${batchesDone})`}
+                        </Link>
+                    )}
                     <button 
                         onClick={() => navigate('/csv')}
                         className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 transition text-white rounded-full text-sm font-bold active:scale-95 shadow-lg shadow-indigo-600/20"

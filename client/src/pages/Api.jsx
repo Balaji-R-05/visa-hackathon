@@ -3,9 +3,12 @@ import { motion } from "framer-motion";
 import { assessApi } from "../api/api.js";
 import AssessmentOptions, { DEFAULT_OPTIONS } from "../components/AssessmentOptions.jsx";
 import JobProgress from "../components/JobProgress.jsx";
+import RemotePreview from "../components/RemotePreview.jsx";
 import { Link2, ShieldCheck, ChevronRight, Sparkles, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
+import useResumeAssessment from "../hooks/useResumeAssessment.js";
+import ResumeBanner from "../components/ResumeBanner.jsx";
 
 const Api = ({ onResult }) => {
   const [apiLink, setapiLink] = useState("");
@@ -13,6 +16,15 @@ const Api = ({ onResult }) => {
   const [options, setOptions] = useState(DEFAULT_OPTIONS);
   const [job, setJob] = useState(null);
   const navigate = useNavigate();
+  const resumedName = useResumeAssessment("api", {
+    setLoading,
+    setJob,
+    onFinished: (finished) => {
+      finished.warnings?.forEach((w) => toast.warn(w));
+      if (onResult) onResult(finished.report);
+      else navigate("/result");
+    },
+  });
 
   const handleConnect = async () => {
     if (!apiLink) return;
@@ -68,6 +80,8 @@ const Api = ({ onResult }) => {
               Connect your production API endpoints directly for real-time payload monitoring and structural integrity reporting.
             </motion.p>
           </div>
+
+          <ResumeBanner name={resumedName} />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Input Area */}
@@ -128,6 +142,8 @@ const Api = ({ onResult }) => {
               </div>
             </div>
           </div>
+
+          <RemotePreview source="api" payload={{ apiUrl: apiLink }} ready={!!apiLink} disabled={loading} />
         </motion.div>
       </div>
     </div>

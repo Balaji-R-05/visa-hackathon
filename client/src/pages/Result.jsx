@@ -7,6 +7,8 @@ import {
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { exportReport, verifyAuditLog } from "../api/api";
+import { downloadText, findingsToCsv } from "../utils/exportCsv";
+import { downloadReportPdf } from "../utils/reportPdf";
 
 const pct = (x) => `${(x * 100).toFixed(1)}%`;
 const SEVERITY_STYLE = {
@@ -155,6 +157,18 @@ const Result = ({ result }) => {
     }
   };
 
+  const handleDownloadPdf = () => {
+    try {
+      downloadReportPdf(r);
+    } catch (err) {
+      toast.error(`PDF export failed: ${err.message}`);
+    }
+  };
+
+  const handleDownloadFindings = () => {
+    downloadText(`Assay_Findings_${(r.dataset?.dataset_name || "dataset").replace(/[^\w.-]+/g, "_")}.csv`, findingsToCsv(r));
+  };
+
   const handleVerify = async () => {
     try {
       setAudit(await verifyAuditLog());
@@ -172,8 +186,14 @@ const Result = ({ result }) => {
               <ArrowLeft className="size-4" /> Back to Audit
             </button>
             <div className="flex items-center gap-3">
+              <button onClick={handleDownloadPdf} className="px-5 py-2 rounded-full bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white flex items-center gap-2">
+                <Download className="size-3.5" /> Download PDF
+              </button>
               <button onClick={handleDownloadReport} className="px-5 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-bold text-slate-300 hover:text-white flex items-center gap-2">
-                <Download className="size-3.5 text-indigo-400" /> Download Report
+                <Download className="size-3.5 text-indigo-400" /> Markdown
+              </button>
+              <button onClick={handleDownloadFindings} disabled={!r.findings?.length} className="px-5 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-bold text-slate-300 hover:text-white flex items-center gap-2 disabled:opacity-40">
+                <Download className="size-3.5 text-indigo-400" /> Findings CSV
               </button>
               <button onClick={() => navigate("/chat")} className="px-6 py-2 rounded-full bg-indigo-600 hover:bg-indigo-500 text-sm font-bold flex items-center gap-2">
                 Chat with AI <ChevronRight className="size-3" />

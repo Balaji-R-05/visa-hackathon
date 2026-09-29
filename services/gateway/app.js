@@ -55,6 +55,7 @@ export const createApp = () => {
       message: "Assay Gateway",
       endpoints: [
         "POST /api/assessments/{csv|postgres|mongo|api}",
+        "POST /api/preview/{postgres|mongo|api}",
         "GET /api/assessments/:id",
         "POST /api/chat, /api/chat/stream",
         "POST /api/reports/export",
@@ -104,6 +105,15 @@ export const createApp = () => {
     if (!["postgres", "mongo", "api"].includes(req.params.source)) return res.status(404).json({ error: "unknown source" });
     try {
       return relay(res, await upstream("dataPlane", `/jobs/${req.params.source}`, { method: "POST", json: req.body || {} }));
+    } catch (err) {
+      return unavailable(res, "data-plane", err);
+    }
+  });
+
+  app.post("/api/preview/:source", async (req, res) => {
+    if (!["postgres", "mongo", "api"].includes(req.params.source)) return res.status(404).json({ error: "unknown source" });
+    try {
+      return relay(res, await upstream("dataPlane", `/preview/${req.params.source}`, { method: "POST", json: req.body || {}, timeout: 20000 }));
     } catch (err) {
       return unavailable(res, "data-plane", err);
     }

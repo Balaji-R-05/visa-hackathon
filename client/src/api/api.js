@@ -24,7 +24,11 @@ export const STAGES = [
   ["auditing", "Recording audit entry"],
 ];
 
-const errorMessage = (err) => err.response?.data?.error || err.response?.data?.message || err.message;
+export const MAX_UPLOAD_MB = 50;
+
+const errorMessage = (err) => err.response?.status === 413
+  ? `File too large. The maximum upload size is ${MAX_UPLOAD_MB} MB.`
+  : err.response?.data?.error || err.response?.data?.message || err.message;
 
 /**
  * Polls an assessment job until it completes, reporting each stage change.
@@ -36,23 +40,63 @@ export const pollAssessment = async (jobId, onProgress, { intervalMs = 1500, tim
     const { data: job } = await api.get(`/assessments/${jobId}`);
     onProgress?.(job);
     if (job.status === "completed") return job;
-    if (job.status === "failed") throw new Error(job.error || "Assessment failed");
+    if (job.status === "failed") throw Object.assign(new Error(job.error || "Assessment failed"), { terminal: true });
     await new Promise((r) => setTimeout(r, intervalMs));
   }
-  throw new Error("Assessment timed out");
+  throw Object.assign(new Error("Assessment timed out"), { terminal: true });
 };
 
-const run = async (startRequest, onProgress) => {
+// The job that is currently running for each page ("csv" | "table" | "api") is remembered in
+// localStorage, so after a reload the page can pick the same job up again (jobs live on the server).
+const activeKey = (kind) => `assay_active_${kind}`;
+export const getActiveJob = (kind) => {
+  try {
+    return JSON.parse(localStorage.getItem(activeKey(kind)) || "null");
+  } catch {
+    return null;
+  }
+};
+const saveActive = (kind, value) => { try { localStorage.setItem(activeKey(kind), JSON.stringify(value)); } catch { /* storage unavailable */ } };
+const clearActive = (kind) => { try { localStorage.removeItem(activeKey(kind)); } catch { /* storage unavailable */ } };
+
+const run = async (startRequest, onProgress, track) => {
   try {
     const { data } = await startRequest();
+    if (track) saveActive(track.kind, { job_id: data.job_id, name: track.name, startedAt: Date.now() });
     onProgress?.({ status: "queued", stage: "queued", job_id: data.job_id });
-    return await pollAssessment(data.job_id, onProgress);
+    try {
+      const job = await pollAssessment(data.job_id, onProgress);
+      if (track) clearActive(track.kind);
+      return job;
+    } catch (err) {
+      // A failed job is finished; a network hiccup is not, so the job stays resumable.
+      if (track && (err.response?.status === 404 || err.terminal)) clearActive(track.kind);
+      throw err;
+    }
   } catch (err) {
     throw new Error(errorMessage(err));
   }
 };
 
-export const assessCsv = (file, options, onProgress) => {
+/** Continues polling the job remembered for `kind`, if any. Resolves null when nothing (valid) is pending. */
+export const resumeAssessment = async (kind, onProgress) => {
+  const active = getActiveJob(kind);
+  if (!active) return null;
+  try {
+    const job = await pollAssessment(active.job_id, onProgress);
+    clearActive(kind);
+    return job;
+  } catch (err) {
+    if (err.response?.status === 404) { clearActive(kind); return null; } // expired
+    if (err.terminal) clearActive(kind);
+    throw new Error(errorMessage(err));
+  }
+};
+
+/** Full job document (report included) for an earlier job, or throws if it has expired. */
+export const fetchJob = async (jobId) => (await api.get(`/assessments/${jobId}`)).data;
+
+export const assessCsv = (file, options, onProgress, { track = true } = {}) => {
   const form = new FormData();
   form.append("file", file);
   form.append("jurisdiction", options.jurisdiction);
@@ -60,7 +104,7 @@ export const assessCsv = (file, options, onProgress) => {
   form.append("narrative", String(options.narrative));
   form.append("freshness_days", String(options.freshnessDays ?? 365));
   if (options.approvedRules) form.append("rules", JSON.stringify(options.approvedRules));
-  return run(() => api.post("/assessments/csv", form, { headers: { "Content-Type": "multipart/form-data" } }), onProgress);
+  return run(() => api.post("/assessments/csv", form, { headers: { "Content-Type": "multipart/form-data" } }), onProgress, track && { kind: "csv", name: file.name });
 };
 
 const jsonOptions = (options) => ({
@@ -72,13 +116,13 @@ const jsonOptions = (options) => ({
 });
 
 export const assessPostgres = ({ dbLink, tableName }, options, onProgress) =>
-  run(() => api.post("/assessments/postgres", { connectionString: dbLink, tableName, ...jsonOptions(options) }), onProgress);
+  run(() => api.post("/assessments/postgres", { connectionString: dbLink, tableName, ...jsonOptions(options) }), onProgress, { kind: "table", name: tableName });
 
 export const assessMongo = ({ dbLink, dbName, collectionName }, options, onProgress) =>
-  run(() => api.post("/assessments/mongo", { uri: dbLink, dbName, collectionName, ...jsonOptions(options) }), onProgress);
+  run(() => api.post("/assessments/mongo", { uri: dbLink, dbName, collectionName, ...jsonOptions(options) }), onProgress, { kind: "table", name: collectionName });
 
 export const assessApi = ({ apiUrl }, options, onProgress) =>
-  run(() => api.post("/assessments/api", { apiUrl, ...jsonOptions(options) }), onProgress);
+  run(() => api.post("/assessments/api", { apiUrl, ...jsonOptions(options) }), onProgress, { kind: "api", name: (() => { try { return new URL(apiUrl).host; } catch { return "api"; } })() });
 
 /**
  * Streaming chat with the auditor (server-sent events through the gateway).
@@ -114,6 +158,15 @@ export const chatWithAIStream = async ({ auditContext, messages, userInput, onCh
 export const exportReport = async (report) => {
   const { data } = await api.post("/reports/export", report);
   return data.markdown;
+};
+
+/** ~10 sample rows from a connected source (postgres | mongo | api), for the pre-assessment preview. */
+export const previewSource = async (source, payload) => {
+  try {
+    return (await api.post(`/preview/${source}`, payload)).data;
+  } catch (err) {
+    throw new Error(errorMessage(err));
+  }
 };
 
 export const verifyAuditLog = async () => (await api.get("/audit/verify")).data;

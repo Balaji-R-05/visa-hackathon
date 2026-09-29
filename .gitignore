@@ -16,6 +16,9 @@ plagiarism
 .local-logs/
 !.env.example
 
+# Timestamped run dumps from evaluation/*.py; kept locally, not committed
+evaluation/results/*.json
+
 # Downloaded datasets (licensed by their owners; not redistributed)
 data/*
 !data/README.md

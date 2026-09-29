@@ -26,7 +26,7 @@ function parseCsv(text) {
   return rows.filter((r) => r.length > 1 || r[0] !== "");
 }
 
-function inferType(values) {
+export function inferType(values) {
   const v = values.filter((x) => x !== "");
   if (!v.length) return "empty";
   if (v.every((x) => /^-?\d+$/.test(x))) return "integer";
@@ -36,18 +36,18 @@ function inferType(values) {
   return "text";
 }
 
-const TYPE_STYLE = {
+export const TYPE_STYLE = {
   integer: "text-sky-300 bg-sky-500/10", number: "text-sky-300 bg-sky-500/10",
   date: "text-amber-300 bg-amber-500/10", boolean: "text-violet-300 bg-violet-500/10",
   text: "text-slate-300 bg-white/5", empty: "text-slate-500 bg-white/5",
 };
 
 export default function DataPreview({ file }) {
-  const [state, setState] = useState({ rows: null, truncated: false, error: "" });
+  const [state, setState] = useState({ rows: null, truncated: false, error: "", loading: true });
 
   useEffect(() => {
     let cancelled = false;
-    setState({ rows: null, truncated: false, error: "" });
+    setState({ rows: null, truncated: false, error: "", loading: true });
     if (!file) return;
     const truncated = file.size > SLICE_BYTES;
     file.slice(0, SLICE_BYTES).text()
@@ -78,24 +78,42 @@ export default function DataPreview({ file }) {
   if (!file) return null;
 
   return (
+    <PreviewCard
+      title="Data preview"
+      state={state}
+      summary={summary}
+      badges={summary ? [`${summary.truncated ? "~" : ""}${summary.rowCount.toLocaleString()} rows`, `${summary.cols.length} columns`, `${(file.size / 1024 / 1024).toFixed(2)} MB`] : []}
+      footnote={summary && `Showing the first ${summary.data.length} rows${summary.truncated ? ", with types and blanks estimated from the first 512 KB" : ""}. This preview is generated in your browser; nothing is uploaded until you start the analysis.`}
+    />
+  );
+}
+
+// Shared presentation for local (CSV) and remote (database/API) previews.
+export function summarizeRows(columns, rows) {
+  const cols = columns.map((name, i) => {
+    const values = rows.map((r) => (r[i] ?? "").toString().trim());
+    const blanks = values.filter((v) => v === "").length;
+    return { name, type: inferType(values), nullPct: values.length ? (blanks / values.length) * 100 : 0 };
+  });
+  return { cols, data: rows };
+}
+
+export function PreviewCard({ title, state = {}, summary, badges = [], footnote }) {
+  return (
     <div className="mt-8 rounded-[2rem] border border-white/10 bg-white/[0.02] p-6 md:p-8">
       <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
         <div className="flex items-center gap-3">
           <Table2 className="size-5 text-indigo-400" />
-          <span className="font-bold text-sm uppercase tracking-wider">Data preview</span>
+          <span className="font-bold text-sm uppercase tracking-wider">{title}</span>
         </div>
-        {summary && (
-          <div className="flex gap-2 text-xs text-slate-400">
-            <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10">{summary.truncated ? "~" : ""}{summary.rowCount.toLocaleString()} rows</span>
-            <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10">{summary.cols.length} columns</span>
-            <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10">{(file.size / 1024 / 1024).toFixed(2)} MB</span>
-          </div>
-        )}
+        <div className="flex gap-2 text-xs text-slate-400">
+          {badges.map((b) => <span key={b} className="px-3 py-1 rounded-full bg-white/5 border border-white/10">{b}</span>)}
+        </div>
       </div>
 
       {state.error && <p className="flex items-center gap-2 text-sm text-red-400"><AlertCircle className="size-4" />{state.error}</p>}
-      {!state.error && !state.rows && <p className="text-sm text-slate-500">Reading file…</p>}
-      {state.rows && !summary && <p className="flex items-center gap-2 text-sm text-amber-300"><AlertCircle className="size-4" />No data rows found. Check that the file has a header and at least one row.</p>}
+      {!state.error && state.loading && <p className="text-sm text-slate-500">Reading…</p>}
+      {state.rows && !summary && <p className="flex items-center gap-2 text-sm text-amber-300"><AlertCircle className="size-4" />No data rows found.</p>}
 
       {summary && (
         <>
@@ -128,9 +146,7 @@ export default function DataPreview({ file }) {
               </tbody>
             </table>
           </div>
-          <p className="mt-3 text-xs text-slate-500">
-            Showing the first {summary.data.length} rows{summary.truncated ? ", with types and blanks estimated from the first 512 KB" : ""}. This preview is generated in your browser; nothing is uploaded until you start the analysis.
-          </p>
+          {footnote && <p className="mt-3 text-xs text-slate-500">{footnote}</p>}
         </>
       )}
     </div>

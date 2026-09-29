@@ -12,6 +12,9 @@ import Api from './pages/Api'
 import Home from './pages/Home'
 import Result from './pages/Result'
 import Chatbot from './pages/Chatbot'
+import History from './pages/History'
+import Batch from './pages/Batch'
+import { addToHistory } from './utils/history'
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +24,7 @@ function App() {
   });
   const navigate = useNavigate();
 
-  const handleFinishedAnalysis = async (data) => {
+  const handleFinishedAnalysis = async (data, { save = true } = {}) => {
     setIsLoading(true); 
     
     try {
@@ -29,6 +32,7 @@ function App() {
       await new Promise(resolve => setTimeout(resolve, 100));
 
       setResult(data);
+      if (save) addToHistory(data);
       localStorage.setItem("assay_result", JSON.stringify(data));
       
       navigate('/result');
@@ -50,6 +54,8 @@ function App() {
         <Route path="/table" element={<Table onResult={handleFinishedAnalysis} />} />
         <Route path="/api" element={<Api onResult={handleFinishedAnalysis} />} />
         <Route path="/chat" element={<Chatbot auditContext={result} />} />
+        <Route path="/batch" element={<Batch onOpen={(report) => handleFinishedAnalysis(report, { save: false })} />} />
+        <Route path="/history" element={<History onOpen={(report) => { setResult(report); localStorage.setItem("assay_result", JSON.stringify(report)); }} />} />
         <Route path="/result" element={<Result result={result} />} />
       </Routes>
     </div>

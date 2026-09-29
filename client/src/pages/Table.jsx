@@ -3,8 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { assessPostgres, assessMongo } from "../api/api.js";
 import AssessmentOptions, { DEFAULT_OPTIONS } from "../components/AssessmentOptions.jsx";
 import JobProgress from "../components/JobProgress.jsx";
+import RemotePreview from "../components/RemotePreview.jsx";
 import { Database, Table as TableIcon, Link2, ShieldCheck, ChevronRight, Sparkles, Loader2, Zap } from "lucide-react";
 import { toast } from "react-toastify";
+import useResumeAssessment from "../hooks/useResumeAssessment.js";
+import ResumeBanner from "../components/ResumeBanner.jsx";
 import { useNavigate } from "react-router";
 
 const Table = ({ onResult }) => {
@@ -16,6 +19,15 @@ const Table = ({ onResult }) => {
   const [options, setOptions] = useState(DEFAULT_OPTIONS);
   const [job, setJob] = useState(null);
   const navigate = useNavigate();
+  const resumedName = useResumeAssessment("table", {
+    setLoading,
+    setJob,
+    onFinished: (finished) => {
+      finished.warnings?.forEach((w) => toast.warn(w));
+      if (onResult) onResult(finished.report);
+      else navigate("/result");
+    },
+  });
 
   const handleConnect = async () => {
     if (!dbLink) return;
@@ -78,6 +90,8 @@ const Table = ({ onResult }) => {
               Connect your {mode === "sql" ? "PostgreSQL" : "MongoDB"} instance directly for real-time transaction monitoring and structural integrity reporting.
             </motion.p>
           </div>
+
+          <ResumeBanner name={resumedName} />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Input Area */}
@@ -190,6 +204,13 @@ const Table = ({ onResult }) => {
               </div>
             </div>
           </div>
+
+          <RemotePreview
+            source={mode === "sql" ? "postgres" : "mongo"}
+            payload={mode === "sql" ? { connectionString: dbLink, tableName } : { uri: dbLink, dbName, collectionName: tableName }}
+            ready={!!dbLink && !!tableName && (mode === "sql" || !!dbName)}
+            disabled={loading}
+          />
         </motion.div>
       </div>
     </div>

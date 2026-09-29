@@ -105,6 +105,36 @@ export const createApp = ({ jobs = new Jobs(), deps = {} } = {}) => {
     }
   }, (r) => loadApi(r.body)));
 
+  // A small sample of rows for the user to eyeball before assessing. Rows go back to the
+  // requesting browser only; nothing here is forwarded to any other service.
+  const PREVIEW_ROWS = 10;
+  const previewCell = (v) => {
+    if (v === null || v === undefined) return null;
+    const text = v instanceof Date ? v.toISOString() : typeof v === "object" ? JSON.stringify(v) : String(v);
+    return text.length > 200 ? `${text.slice(0, 200)}…` : text;
+  };
+  const previewLoaders = {
+    postgres: (b) => loadPostgres({ connectionString: b.connectionString, tableName: b.tableName, limit: PREVIEW_ROWS }),
+    mongo: (b) => loadMongo({ uri: b.uri, dbName: b.dbName, collectionName: b.collectionName, limit: PREVIEW_ROWS }),
+    api: (b) => loadApi({ apiUrl: b.apiUrl }),
+  };
+  app.post("/preview/:source", async (req, res) => {
+    const load = previewLoaders[req.params.source];
+    if (!load) return res.status(404).json({ error: "unknown source" });
+    try {
+      const all = await load(req.body || {});
+      const rows = all.slice(0, PREVIEW_ROWS);
+      const columns = [...new Set(rows.flatMap((r) => Object.keys(r || {})))];
+      return res.json({
+        columns,
+        rows: rows.map((r) => columns.map((c) => previewCell(r?.[c]))),
+        fetched: all.length,
+      });
+    } catch (err) {
+      return res.status(err.status || 502).json({ error: err.status ? err.message : "could not read the source" });
+    }
+  });
+
   app.get("/jobs/:id", async (req, res) => {
     const job = await jobs.get(req.params.id);
     if (!job) return res.status(404).json({ error: "job not found or expired" });
