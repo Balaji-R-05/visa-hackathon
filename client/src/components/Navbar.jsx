@@ -1,55 +1,79 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MenuIcon, XIcon } from "lucide-react";
 import { motion } from "framer-motion";
-import { Link } from "react-router";
+import { useNavigate } from "react-router";
+import { Link, NavLink } from "react-router";
+import Logo from "./Logo";
+import { Layers } from "lucide-react";
+import { useBatchRun } from "../utils/batchStore";
 
 export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const navigate = useNavigate();
+    const run = useBatchRun();
+    const batchActive = ["running", "stopping", "recovering"].includes(run.status);
+    const batchesDone = run.batches.filter((b) => b.status !== "running").length;
+    const [scrolled, setScrolled] = useState(false);
+    useEffect(() => {
+        const onScroll = () => setScrolled(window.scrollY > 8);
+        onScroll();
+        window.addEventListener("scroll", onScroll, { passive: true });
+        return () => window.removeEventListener("scroll", onScroll);
+    }, []);
     const navlinks = [
         {
-            href: "",
-            text: "Home",
+            href: "/csv",
+            text: "CSV Audit",
         },
         {
-            href: "csv",
-            text: "CSV",
+            href: "/table",
+            text: "Table Audit",
         },
         {
-            href: "table",
-            text: "Table",
+            href: "/api",
+            text: "API Audit",
         },
         {
-            href: "api",
-            text: "API",
+            href: "/chat",
+            text: "AI Chat",
         },
-        
+        {
+            href: "/history",
+            text: "History",
+        },
     ];
     return (
         <>
-            <motion.nav className="sticky top-0 z-50 flex items-center justify-between w-full h-18 px-6 md:px-16 lg:px-24 xl:px-32 backdrop-blur"
+            <motion.nav className={`sticky top-0 z-50 flex items-center justify-between w-full h-18 px-6 md:px-16 lg:px-24 xl:px-32 backdrop-blur-md transition-colors duration-300 border-b ${scrolled ? "bg-black/60 border-white/10" : "bg-transparent border-transparent"}`}
                 initial={{ y: -100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ type: "spring", stiffness: 250, damping: 70, mass: 1 }}
             >
-                <a href="https://prebuiltui.com?utm_source=agentix">
-                    <img className="h-9 w-auto" src="/assets/logo.svg" width={138} height={36} alt="logo" />
-                </a>
+                <Link to="/" aria-label="Assay home">
+                    <Logo />
+                </Link>
 
                 <div className="hidden lg:flex items-center gap-8 transition duration-500">
                     {navlinks.map((link) => (
-                        <Link key={link.href} to={link.href} className="hover:text-slate-300 transition">
+                        <NavLink key={link.href} to={link.href} className={({ isActive }) => `relative py-1 text-sm font-medium transition ${isActive ? "text-white after:absolute after:inset-x-0 after:-bottom-1 after:h-0.5 after:rounded-full after:bg-indigo-500" : "text-slate-400 hover:text-slate-100"}`}>
                             {link.text}
-                        </Link>
+                        </NavLink>
                     ))}
                 </div>
 
-                <div className="hidden lg:block space-x-3">
-                    <button className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 transition text-white rounded-md active:scale-95">
-                        Get started
-                    </button>
-                    <button className="hover:bg-slate-300/20 transition px-6 py-2 border border-slate-400 rounded-md active:scale-95">
-                        Login
+                <div className="hidden lg:flex items-center gap-3">
+                    {run.status !== "idle" && (
+                        <Link to="/batch" className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-indigo-500/40 bg-indigo-500/10 text-xs font-semibold text-indigo-200 hover:bg-indigo-500/20 transition">
+                            <Layers className={`size-3.5 ${batchActive ? "animate-pulse" : ""}`} />
+                            {batchActive ? `Batch ${batchesDone + 1} running` : run.status === "interrupted" ? "Batch paused" : `Batch done (${batchesDone})`}
+                        </Link>
+                    )}
+                    <button 
+                        onClick={() => navigate('/csv')}
+                        className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 transition text-white rounded-full text-sm font-bold active:scale-95 shadow-lg shadow-indigo-600/20"
+                    >
+                        New Audit
                     </button>
                 </div>
                 <button onClick={() => setIsMenuOpen(true)} className="lg:hidden active:scale-90 transition">
